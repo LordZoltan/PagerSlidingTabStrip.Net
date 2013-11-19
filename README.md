@@ -28,22 +28,22 @@ Usage
 
  1. Include the `PagerSlidingTabStrip` in your view.  this should usually be placed adjacent to the `ViewPager` it represents:
 
-      &lt;pagerslidingtabstrip.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="48dip" /&gt;
+		&lt;pagerslidingtabstrip.PagerSlidingTabStrip
+			android:id="@+id/tabs"
+			android:layout_width="match_parent"
+			android:layout_height="48dip" /&gt;
  
  2. In your `OnCreate`/`OnCreateView`(fragment) bind the widget to the `ViewPager` (note this is taken from the Example).
 
-      _tabs = FindViewById<PagerSlidingTabStrip.PagerSlidingTabStrip>(Resource.Id.tabs);
-      _pager = FindViewById<ViewPager>(Resource.Id.pager);
-      _adapter = new MyPagerAdapter(SupportFragmentManager);
+		_tabs = FindViewById<PagerSlidingTabStrip.PagerSlidingTabStrip>(Resource.Id.tabs);
+		_pager = FindViewById<ViewPager>(Resource.Id.pager);
+		_adapter = new MyPagerAdapter(SupportFragmentManager);
 
-      // Set the pager with an adapter:
-      _pager.Adapter = _adapter;
+		// Set the pager with an adapter:
+		_pager.Adapter = _adapter;
 
-      //Set the pager to the tabs control:
-      _tabs.SetViewPager(_pager);
+		//Set the pager to the tabs control:
+		_tabs.SetViewPager(_pager);
 
  3. *(Optional)* If you use the `PageScrolled`/`PageScrollStateChanged`/`PageSelected` events from your view pager, you should 
 now subscribe instead to the same events on the `_tabs` object (it proxies the events from the pager).
