@@ -7,11 +7,11 @@ using Android.App;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PagerSlidingTabStrip")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Xamarin.Android port of Java library of the same name")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PagerSlidingTabStrip")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("PagerSlidingTabStrip (.Net port)")]
+[assembly: AssemblyCopyright("Copyright ©Andras Zoltan 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
