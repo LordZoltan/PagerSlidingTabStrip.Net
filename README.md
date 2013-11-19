@@ -28,10 +28,10 @@ Usage
 
  1. Include the `PagerSlidingTabStrip` in your view.  this should usually be placed adjacent to the `ViewPager` it represents:
 
-		&lt;pagerslidingtabstrip.PagerSlidingTabStrip
+		<pagerslidingtabstrip.PagerSlidingTabStrip
 			android:id="@+id/tabs"
 			android:layout_width="match_parent"
-			android:layout_height="48dip" /&gt;
+			android:layout_height="48dip" />
  
  2. In your `OnCreate`/`OnCreateView`(fragment) bind the widget to the `ViewPager` (note this is taken from the Example).
 
