@@ -26,6 +26,7 @@ using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Content.Res;
+using Android.Database;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
@@ -209,6 +210,28 @@ namespace PagerSlidingTabStrip
 		/// </summary>
 		public event EventHandler<ViewPager.PageScrolledEventArgs> PageScrolled;
 
+		private class PagerAdapterDataSetObserver : DataSetObserver
+		{
+			private readonly PagerSlidingTabStrip TabStrip;
+
+			public PagerAdapterDataSetObserver(PagerSlidingTabStrip tabStrip)
+			{
+				TabStrip = tabStrip;
+			}
+
+			protected PagerAdapterDataSetObserver(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
+
+			public override void OnChanged()
+			{
+				TabStrip.NotifyDataSetChanged();
+			}
+
+			public override void OnInvalidated()
+			{
+				TabStrip.NotifyDataSetChanged();
+			}
+		}
+
 		/// <summary>
 		/// Sets the view pager for this instance.
 		/// </summary>
@@ -222,7 +245,7 @@ namespace PagerSlidingTabStrip
 			{
 				throw new ArgumentException("ViewPager does not have adapter instance.", "pager");
 			}
-			//pager.SetOnPageChangeListener(this);
+			pager.Adapter.RegisterDataSetObserver(new PagerAdapterDataSetObserver(this));
 			pager.PageScrolled += pager_PageScrolled;
 			pager.PageScrollStateChanged += pager_PageScrollStateChanged;
 			pager.PageSelected += pager_PageSelected;
@@ -317,12 +340,16 @@ namespace PagerSlidingTabStrip
 			ViewTreeObserver.GlobalLayout += ViewTreeObserver_GlobalLayout;
 		}
 
+		private bool _shouldObserve = false;
 		void ViewTreeObserver_GlobalLayout(object sender, EventArgs e)
 		{
-			ViewTreeObserver.GlobalLayout -= ViewTreeObserver_GlobalLayout;
-			_currentPosition = _pager.CurrentItem;
-			_currentPositionOffset = 0.0f;
-			scrollToChild(_currentPosition, 0);
+			if (_shouldObserve)
+			{
+				_currentPosition = _pager.CurrentItem;
+				_currentPositionOffset = 0.0f;
+				scrollToChild(_currentPosition, 0);
+				_shouldObserve = false;
+			}
 		}
 
 		private void addTextTab(int position, String title)

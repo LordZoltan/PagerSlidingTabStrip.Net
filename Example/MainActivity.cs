@@ -88,8 +88,6 @@ namespace Example
 
 		private DrawableCallback _drawableCallback;
 
-
-
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);

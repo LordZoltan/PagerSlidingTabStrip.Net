@@ -1,23 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-    <metadata>
-        <id>PagerSlidingTabStrip.Net</id>
-        <version>1.0.31119.1547</version>
-        <title>PagerSlidingTabStrip (Xamarin.Android)</title>
-        <authors>Andras.Zoltan</authors>
-        <owners>Andras.Zoltan</owners>
-        <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-        <projectUrl>https://github.com/LordZoltan/PagerSlidingTabStrip.Net</projectUrl>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>.Net port of the PagerSlidingTabStrip component, originally written by Andreas Stütz (found at https://github.com/astuetz/PagerSlidingTabStrip)</description>
-        <copyright>2013 Andras Zoltan</copyright>
-        <tags>xamarin android</tags>
-			<frameworkAssemblies>
-				<frameworkAssembly assemblyName="Mono.Android.Support.v4" />
-				<frameworkAssembly assemblyName="Mono.Android.Export" />
-			</frameworkAssemblies>
-    </metadata>
-	<files>
-		<file src="bin\Release\PagerSlidingTabStrip.*" target="lib\MonoAndroid2.2" />
-	</files>
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PagerSlidingTabStrip.Net</id>
+    <version>1.0.31120.2315</version>
+    <title>PagerSlidingTabStrip (Xamarin.Android)</title>
+    <authors>Andras.Zoltan</authors>
+    <owners>Andras.Zoltan</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/LordZoltan/PagerSlidingTabStrip.Net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.Net port of the PagerSlidingTabStrip component, originally written by Andreas Stütz (found at https://github.com/astuetz/PagerSlidingTabStrip)</description>
+		<releaseNotes>DataSetObserver now registered to ViewPager's Adapter when it is set, so the tabs will re-bind and redraw when the adapter singifies a change in the data.</releaseNotes>
+    <copyright>2013 Andras Zoltan</copyright>
+    <tags>xamarin android</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Mono.Android.Support.v4" />
+      <frameworkAssembly assemblyName="Mono.Android.Export" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="bin\Release\PagerSlidingTabStrip.*" target="lib\MonoAndroid2.2" />
+  </files>
 </package>
