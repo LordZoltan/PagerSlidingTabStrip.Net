@@ -1,7 +1,11 @@
 PagerSlidingTabStrip.Net
 ========================
 
-Port of Java project of the same name by Andreas Stütz [here][1].
+An enhanced tab strip for view pagers, offering control over tab background, highlight colour, divider colour and
+much more.  The tabs can scroll in their own right, and the indicator slides smoothly between tabs as pages are changed,
+in the same way as is seen in the Play Store(tm) version 4.4.22.
+
+This is a port the of Java project of the same name by Andreas Stütz [here][1].
 
 The example application is, also, a straight port as well - showing the same features.
 
