@@ -28,9 +28,10 @@ namespace Example
 			{
 				// TODO: Complete member initialization
 				this.SupportFragmentManager = SupportFragmentManager;
+				_count = Titles.Length;
 			}
 
-			private static readonly string[] Titles = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
+			internal static readonly string[] Titles = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
 																	"Top New Free", "Trending" };
 
 			public override Android.Support.V4.App.Fragment GetItem(int position)
@@ -38,14 +39,28 @@ namespace Example
 				return new SuperAwesomeCardFragment(position);
 			}
 
+			private int _count;
 			public override int Count
 			{
-				get { return Titles.Length; }
+				get { return _count; }
 			}
 
 			public override Java.Lang.ICharSequence GetPageTitleFormatted(int position)
 			{
 				return new Java.Lang.String(Titles[position]);
+			}
+
+			/// <summary>
+			/// used to demonstrate how the control can respond to tabs being added and removed.
+			/// </summary>
+			/// <param name="count"></param>
+			public void SetCount(int count)
+			{
+				if (count < 0 || count > Titles.Length)
+					return;
+
+				_count = count;
+				NotifyDataSetChanged();
 			}
 		}
 
@@ -110,6 +125,7 @@ namespace Example
 		public override bool OnCreateOptionsMenu(IMenu menu)
 		{
 			MenuInflater.Inflate(Resource.Menu.main, menu);
+			
 			return true;
 		}
 
@@ -121,6 +137,26 @@ namespace Example
 					{
 						QuickContactFragment dialog = new QuickContactFragment();
 						dialog.Show(SupportFragmentManager, "QuickContactFragment");
+						return true;
+					}
+				case Resource.Id.action_settabsone:
+					{
+						_adapter.SetCount(1);
+						return true;
+					}
+				case Resource.Id.action_settabstwo:
+					{
+						_adapter.SetCount(2);
+						return true;
+					}
+				case Resource.Id.action_settabsthree:
+					{
+						_adapter.SetCount(3);
+						return true;
+					}
+				case Resource.Id.action_settabsfull:
+					{
+						_adapter.SetCount(MyPagerAdapter.Titles.Length);
 						return true;
 					}
 			}

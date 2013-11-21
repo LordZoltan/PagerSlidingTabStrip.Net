@@ -86,6 +86,7 @@ namespace PagerSlidingTabStrip
 
 		private bool _shouldExpand = false;
 		private bool _textAllCaps = true;
+		private bool _globalLayoutSubscribed = false;
 
 		private int _scrollOffset = 52;
 		private int _indicatorHeight = 8;
@@ -277,7 +278,7 @@ namespace PagerSlidingTabStrip
 				//the pager again.
 				_currentPositionOffset = 0.0f;
 				_currentPosition = _pager.CurrentItem;
-				scrollToChild(_pager.CurrentItem, 0);
+				ScrollToChild(_pager.CurrentItem, 0);
 			}
 
 			var evt = PageScrollStateChanged;
@@ -292,7 +293,7 @@ namespace PagerSlidingTabStrip
 			_currentPosition = e.Position;
 			_currentPositionOffset = e.PositionOffset;
 
-			scrollToChild(e.Position, (int)(e.PositionOffset * _tabsContainer.GetChildAt(e.Position).Width));
+			ScrollToChild(e.Position, (int)(e.PositionOffset * _tabsContainer.GetChildAt(e.Position).Width));
 
 			Invalidate();
 
@@ -314,7 +315,8 @@ namespace PagerSlidingTabStrip
 		/// Used to tell this instance that the underlying tabs have changed.
 		/// </summary>
 		public void NotifyDataSetChanged()
-		{
+		{	
+
 			_tabsContainer.RemoveAllViews();
 			var adapter = _pager.Adapter;
 			_tabCount = adapter.Count;
@@ -323,36 +325,52 @@ namespace PagerSlidingTabStrip
 			{
 				for (int i = 0; i < _tabCount; i++)
 				{
-					addIconTab(i, iconAdapter.GetPageIconResId(i));
+					AddIconTab(i, iconAdapter.GetPageIconResId(i));
 				}
 			}
 			else
 			{
 				for (int i = 0; i < _tabCount; i++)
 				{
-					addTextTab(i, adapter.GetPageTitle(i));
+					AddTextTab(i, adapter.GetPageTitle(i));
 				}
 			}
 
-			updateTabStyles();
-
 			_checkedTabWidths = false;
-			ViewTreeObserver.GlobalLayout += ViewTreeObserver_GlobalLayout;
+			UpdateTabStyles();
+
+			if (!_globalLayoutSubscribed)
+			{ 
+				ViewTreeObserver.GlobalLayout += ViewTreeObserver_GlobalLayout;
+				_globalLayoutSubscribed = true;
+			}
+			_shouldObserve = true;
+			RequestLayout();
+			Invalidate();
 		}
 
 		private bool _shouldObserve = false;
 		void ViewTreeObserver_GlobalLayout(object sender, EventArgs e)
 		{
+			//altered from Java version to use a flag because unsubscribing throws a NotSupportedException
+			//in either some or all circumstances.
 			if (_shouldObserve)
 			{
 				_currentPosition = _pager.CurrentItem;
 				_currentPositionOffset = 0.0f;
-				scrollToChild(_currentPosition, 0);
+				if ((_pager.Adapter.Count - 1) < _currentPosition)
+				{
+					_currentPosition = 0;
+					_pager.SetCurrentItem(0, false);
+				}
+
+				ScrollToChild(_currentPosition, 0);
+
 				_shouldObserve = false;
 			}
 		}
 
-		private void addTextTab(int position, String title)
+		private void AddTextTab(int position, String title)
 		{
 			TextView tab = new TextView(Context);
 
@@ -370,7 +388,7 @@ namespace PagerSlidingTabStrip
 
 		}
 
-		private void addIconTab(int position, int resId)
+		private void AddIconTab(int position, int resId)
 		{
 
 			ImageButton tab = new ImageButton(Context);
@@ -385,7 +403,7 @@ namespace PagerSlidingTabStrip
 			_tabsContainer.AddView(tab);
 		}
 
-		private void updateTabStyles()
+		private void UpdateTabStyles()
 		{
 
 			for (int i = 0; i < _tabCount; i++)
@@ -395,14 +413,14 @@ namespace PagerSlidingTabStrip
 
 				v.LayoutParameters = _defaultTabLayoutParams;
 				v.SetBackgroundResource(_tabBackgroundResId);
-				if (_shouldExpand)
-				{
-					v.SetPadding(0, 0, 0, 0);
-				}
-				else
-				{
+				//if (_shouldExpand)
+				//{
+				//	v.SetPadding(0, 0, 0, 0);
+				//}
+				//else
+				//{
 					v.SetPadding(_tabPadding, 0, _tabPadding, 0);
-				}
+				//}
 
 				if (v is TextView)
 				{
@@ -412,15 +430,11 @@ namespace PagerSlidingTabStrip
 					tab.SetTypeface(_tabTypeface, _tabTypefaceStyle);
 					tab.SetTextColor(_tabTextColor);
 
-					// setAllCaps() is only available from API 14, so the upper case is made manually if we are on a
-					// pre-ICS-build
+					// if you compare to the java version, it branches based on the running version.
+					// we can't do that as our available APIs are limited to the minimum SDK.
 					if (_textAllCaps)
 					{
-						/*if (Build.VERSION.SdkInt >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-							tab.setAllCaps(true);
-						} else {*/
 						tab.SetText(tab.Text.ToUpper(), TextView.BufferType.Normal);
-						/*}*/
 					}
 				}
 			}
@@ -482,32 +496,49 @@ namespace PagerSlidingTabStrip
 
 			if (!_shouldExpand || MeasureSpec.GetMode(widthMeasureSpec) == MeasureSpecMode.Unspecified)
 			{
+				Android.Util.Log.Info("PagerSlidingTabStrip", "Leaving OnMeasure as _shouldExpand is false or widthMeasureSpec is Unspecified");
 				return;
 			}
 
 			int myWidth = MeasuredWidth;
 			int childWidth = 0;
+			Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("_tabCount is {0} in OnMeasure", _tabCount));
 			for (int i = 0; i < _tabCount; i++)
 			{
 				childWidth += _tabsContainer.GetChildAt(i).MeasuredWidth;
 			}
 
+			Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("childWidth is {0}, _checkedTabWidths is {1}, myWidth is {2}", childWidth, _checkedTabWidths, myWidth));
+
 			if (!_checkedTabWidths && childWidth > 0 && myWidth > 0)
 			{
-
 				if (childWidth <= myWidth)
 				{
+					Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("measured childWidth less than myWidth - setting all children to expanded"));
 					for (int i = 0; i < _tabCount; i++)
 					{
-						_tabsContainer.GetChildAt(i).LayoutParameters = _expandedTabLayoutParams;
+						var v = _tabsContainer.GetChildAt(i);
+						v.LayoutParameters = _expandedTabLayoutParams;
+						//v.Measure(widthMeasureSpec, heightMeasureSpec);
 					}
 				}
-
+				else
+				{
+					Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("measured childWidth greater than myWidth - setting all children to default"));
+					for (int i = 0; i < _tabCount; i++)
+					{
+						var v = _tabsContainer.GetChildAt(i);
+						v.LayoutParameters = _defaultTabLayoutParams;
+						//v.Measure(widthMeasureSpec, heightMeasureSpec);
+					}
+				}
+				Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("Calling base OnMeasure again and setting _checkedTabWidths to true"));
+				base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
 				_checkedTabWidths = true;
 			}
 		}
 
-		private void scrollToChild(int position, int offset)
+		private void ScrollToChild(int position, int offset)
 		{
 
 			if (_tabCount == 0)
@@ -785,7 +816,7 @@ namespace PagerSlidingTabStrip
 			{
 				_textAllCaps = value;
 				//TODO: call something here to force a redraw?
-				updateTabStyles();
+				UpdateTabStyles();
 			}
 		}
 
@@ -822,7 +853,7 @@ namespace PagerSlidingTabStrip
 			set
 			{
 				_tabTextColor = value;
-				updateTabStyles();
+				UpdateTabStyles();
 			}
 		}
 
@@ -833,7 +864,7 @@ namespace PagerSlidingTabStrip
 		public void SetTextColor(int resId)
 		{
 			this._tabTextColor = Resources.GetColor(resId);
-			updateTabStyles();
+			UpdateTabStyles();
 		}
 
 		/// <summary>
@@ -876,7 +907,7 @@ namespace PagerSlidingTabStrip
 		{
 			this._tabTypeface = typeface;
 			this._tabTypefaceStyle = style;
-			updateTabStyles();
+			UpdateTabStyles();
 		}
 
 		/// <summary>
@@ -891,7 +922,7 @@ namespace PagerSlidingTabStrip
 			set
 			{
 				_tabBackgroundResId = value;
-				updateTabStyles();
+				UpdateTabStyles();
 			}
 		}
 
@@ -910,7 +941,7 @@ namespace PagerSlidingTabStrip
 			set
 			{
 				_tabPadding = value;
-				updateTabStyles();
+				UpdateTabStyles();
 			}
 		}
 

@@ -209,6 +209,18 @@ namespace Example
 			// aapt resource value: 0x7f090006
 			public const int action_contact = 2131296262;
 			
+			// aapt resource value: 0x7f09000a
+			public const int action_settabsfull = 2131296266;
+			
+			// aapt resource value: 0x7f090007
+			public const int action_settabsone = 2131296263;
+			
+			// aapt resource value: 0x7f090009
+			public const int action_settabsthree = 2131296265;
+			
+			// aapt resource value: 0x7f090008
+			public const int action_settabstwo = 2131296264;
+			
 			// aapt resource value: 0x7f090004
 			public const int center = 2131296260;
 			
