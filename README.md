@@ -1,6 +1,8 @@
 PagerSlidingTabStrip.Net
 ========================
 
+*Want a full overview of the control, why it exists, and how to customise it more? [Go to the Wiki!](https://github.com/LordZoltan/PagerSlidingTabStrip.Net/Wiki)*
+
 An enhanced tab strip for view pagers, offering control over tab background, highlight colour, divider colour and
 much more.  The tabs can scroll in their own right, and the indicator slides smoothly between tabs as pages are changed,
 in the same way as is seen in the Play Store(tm) version 4.4.22.
