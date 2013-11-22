@@ -22,7 +22,7 @@ The Example project in the `sample/` folder builds an app that's functionally th
 how to change the number of tabs dynamically***
 
 ![Screenshot 1](https://lh3.googleusercontent.com/-FD9ojqMXcXQ/UouTWmzifII/AAAAAAAAAJw/8Ay-30fethQ/w306-h544-no/psts1.jpg)
-![Screenshot 2](https://lh5.googleusercontent.com/-NIUMGzKWNaY/UouTW5JLOnI/AAAAAAAAAJQ/dbBgmlAOui4/w306-h544-no/psts2.jpg)
+&nbsp;![Screenshot 2](https://lh5.googleusercontent.com/-NIUMGzKWNaY/UouTW5JLOnI/AAAAAAAAAJQ/dbBgmlAOui4/w306-h544-no/psts2.jpg)
 
 And showing icons instead of text:
 
