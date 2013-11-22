@@ -18,6 +18,9 @@ See Andreas' demo, available on the Play Store (see [the project page][1]), for 
 
 The Example project in the `sample/` folder builds an app that's functionally the same:
 
+***Note - since these screenshots were done, the app has been updated with an extra set of menu options that demonstrate
+how to change the number of tabs dynamically***
+
 ![Screenshot 1](https://lh3.googleusercontent.com/-FD9ojqMXcXQ/UouTWmzifII/AAAAAAAAAJw/8Ay-30fethQ/w306-h544-no/psts1.jpg)
 ![Screenshot 2](https://lh5.googleusercontent.com/-NIUMGzKWNaY/UouTW5JLOnI/AAAAAAAAAJQ/dbBgmlAOui4/w306-h544-no/psts2.jpg)
 
