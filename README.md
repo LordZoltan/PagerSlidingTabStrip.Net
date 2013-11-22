@@ -1,15 +1,15 @@
 PagerSlidingTabStrip.Net
 ========================
 
-*Want a full overview of the control, why it exists, and how to customise it more? [Go to the Wiki!](https://github.com/LordZoltan/PagerSlidingTabStrip.Net/Wiki)*
+*Want a full overview of the control, why it exists, and how to customise it more? [Go to the Wiki!](https://github.com/LordZoltan/PagerSlidingTabStrip.Net/wiki)*
 
 An enhanced tab strip for view pagers, offering control over tab background, highlight colour, divider colour and
 much more.  The tabs can scroll in their own right, and the indicator slides smoothly between tabs as pages are changed,
 in the same way as is seen in the Play Store(tm) version 4.4.22.
 
-This is a port the of Java project of the same name by Andreas Stütz [here][1].
+This is a port of the Java project of (almost) the same name by Andreas Stütz [here][1].
 
-The example application is, also, a straight port as well - showing the same features.
+The example application is, also, a straight port as well - showing the same features (now with some additions).
 
 Using Nuget?
 ------------
