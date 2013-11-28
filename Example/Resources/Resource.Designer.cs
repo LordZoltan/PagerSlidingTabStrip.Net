@@ -39,6 +39,7 @@ namespace Example
 			global::PagerSlidingTabStrip.Resource.Attribute.underlineHeight = global::Example.Resource.Attribute.underlineHeight;
 			global::PagerSlidingTabStrip.Resource.Color.background_tab_pressed = global::Example.Resource.Color.background_tab_pressed;
 			global::PagerSlidingTabStrip.Resource.Drawable.pagerslidingtabstrip_background_tab = global::Example.Resource.Drawable.pagerslidingtabstrip_background_tab;
+			global::PagerSlidingTabStrip.Resource.Layout.pagerslidingtabstrip_texttab = global::Example.Resource.Layout.pagerslidingtabstrip_texttab;
 			global::PagerSlidingTabStrip.Resource.String.ApplicationName = global::Example.Resource.String.ApplicationName;
 			global::PagerSlidingTabStrip.Resource.String.Hello = global::Example.Resource.String.Hello;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip = global::Example.Resource.Styleable.PagerSlidingTabStrip;
@@ -203,35 +204,50 @@ namespace Example
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f090005
-			public const int MyButton = 2131296261;
+			// aapt resource value: 0x7f090007
+			public const int MyButton = 2131296263;
 			
-			// aapt resource value: 0x7f090006
-			public const int action_contact = 2131296262;
+			// aapt resource value: 0x7f09000b
+			public const int action_changeadapter = 2131296267;
 			
 			// aapt resource value: 0x7f09000a
-			public const int action_settabsfull = 2131296266;
+			public const int action_contact = 2131296266;
 			
-			// aapt resource value: 0x7f090007
-			public const int action_settabsone = 2131296263;
+			// aapt resource value: 0x7f09000f
+			public const int action_settabsfull = 2131296271;
 			
-			// aapt resource value: 0x7f090009
-			public const int action_settabsthree = 2131296265;
+			// aapt resource value: 0x7f09000c
+			public const int action_settabsone = 2131296268;
+			
+			// aapt resource value: 0x7f09000e
+			public const int action_settabsthree = 2131296270;
+			
+			// aapt resource value: 0x7f09000d
+			public const int action_settabstwo = 2131296269;
 			
 			// aapt resource value: 0x7f090008
-			public const int action_settabstwo = 2131296264;
+			public const int btnChangeTitle = 2131296264;
 			
-			// aapt resource value: 0x7f090004
-			public const int center = 2131296260;
+			// aapt resource value: 0x7f090009
+			public const int btnToggleProgress = 2131296265;
+			
+			// aapt resource value: 0x7f090006
+			public const int center = 2131296262;
 			
 			// aapt resource value: 0x7f090002
 			public const int colors = 2131296258;
 			
-			// aapt resource value: 0x7f090003
-			public const int image = 2131296259;
+			// aapt resource value: 0x7f090005
+			public const int image = 2131296261;
 			
 			// aapt resource value: 0x7f090001
 			public const int pager = 2131296257;
+			
+			// aapt resource value: 0x7f090004
+			public const int tab_progress = 2131296260;
+			
+			// aapt resource value: 0x7f090003
+			public const int tab_text = 2131296259;
 			
 			// aapt resource value: 0x7f090000
 			public const int tabs = 2131296256;
@@ -253,10 +269,19 @@ namespace Example
 			public const int activity_main = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int fragment_quick_contact = 2130903041;
+			public const int custom_tab = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int Main = 2130903042;
+			public const int fragment_quick_contact = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int Main = 2130903043;
+			
+			// aapt resource value: 0x7f030004
+			public const int pagerslidingtabstrip_texttab = 2130903044;
+			
+			// aapt resource value: 0x7f030005
+			public const int SuperAwesomeCardFragment = 2130903045;
 			
 			static Layout()
 			{

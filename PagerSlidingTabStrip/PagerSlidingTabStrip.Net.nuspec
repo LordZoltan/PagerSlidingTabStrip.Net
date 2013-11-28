@@ -2,17 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>PagerSlidingTabStrip.Net</id>
-    <version>1.0.31121.1442</version>
-    <title>PagerSlidingTabStrip (Xamarin.Android)</title>
+    <version>1.1.31128.1503</version>
+    <title>PagerSlidingTabStrip - enhanced tab control for Xamarin.Android</title>
     <authors>Andras.Zoltan</authors>
     <owners>Andras.Zoltan</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/LordZoltan/PagerSlidingTabStrip.Net</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.Net port of the PagerSlidingTabStrip component, originally written by Andreas Stütz (found at https://github.com/astuetz/PagerSlidingTabStrip)</description>
-    <releaseNotes>Fix for expanded tabs when tabs are dynamically added or removed.</releaseNotes>
+    <releaseNotes>Complete restructure of tab creation to allow completely custom views and fine-grained control over tab layout updates etc.</releaseNotes>
     <copyright>2013 Andras Zoltan</copyright>
-    <tags>xamarin android</tags>
+    <tags>xamarin android tabstrip viewpager pagerslidingtabstrip</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="Mono.Android.Support.v4" />
       <frameworkAssembly assemblyName="Mono.Android.Export" />

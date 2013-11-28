@@ -51,6 +51,8 @@ namespace PagerSlidingTabStrip
 	/// </summary>
 	public class PagerSlidingTabStrip : HorizontalScrollView
 	{
+		#region nested types
+
 		/// <summary>
 		/// Interface for an adapter that wants to display icons in tabs instead of text.
 		/// </summary>
@@ -63,51 +65,415 @@ namespace PagerSlidingTabStrip
 			int GetPageIconResId(int position);
 		}
 
+		private class PagerAdapterDataSetObserver : DataSetObserver
+		{
+			private readonly PagerSlidingTabStrip TabStrip;
+
+			public PagerAdapterDataSetObserver(PagerSlidingTabStrip tabStrip)
+			{
+				TabStrip = tabStrip;
+			}
+
+			protected PagerAdapterDataSetObserver(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
+
+			public override void OnChanged()
+			{
+				TabStrip.NotifyDataSetChanged();
+			}
+
+			public override void OnInvalidated()
+			{
+				TabStrip.NotifyDataSetChanged();
+			}
+		}
+
+		#endregion
+
+		#region fields
+
 		private LinearLayout.LayoutParams _defaultTabLayoutParams;
 		private LinearLayout.LayoutParams _expandedTabLayoutParams;
-
-		//public Android.Support.V4.View.ViewPager.IOnPageChangeListener _delegatePageListener;
-
 		private LinearLayout _tabsContainer;
 		private ViewPager _pager;
-
+		private PagerAdapterDataSetObserver _observer;
+		private PagerAdapter _adapter;
+		private ITabProvider _tabProvider; //always set - both text tabs and icons are implemented via providers now
 		private int _tabCount;
-
 		private int _currentPosition = 0;
 		private float _currentPositionOffset = 0f;
-
 		private Paint _rectPaint;
 		private Paint _dividerPaint;
-
 		private bool _checkedTabWidths = false;
 		private Color _indicatorColor = Color.Argb(0xFF, 0x66, 0x66, 0x66);
 		private Color _underlineColor = Color.Argb(0x1A, 0x00, 0x00, 0x00);
 		private Color _dividerColor = Color.Argb(0x1A, 0x00, 0x00, 0x00);
-
 		private bool _shouldExpand = false;
 		private bool _textAllCaps = true;
 		private bool _globalLayoutSubscribed = false;
-
 		private int _scrollOffset = 52;
 		private int _indicatorHeight = 8;
 		private int _underlineHeight = 2;
 		private int _dividerPadding = 12;
 		private int _tabPadding = 24;
 		private int _dividerWidth = 1;
-
 		private int _tabTextSize = 12;
 		private Color _tabTextColor = Color.Argb(0xFF, 0x66, 0x66, 0x66);
 		private Typeface _tabTypeface = null;
 		private TypefaceStyle _tabTypefaceStyle = Typeface.DefaultBold.Style;
-
 		private int _lastScrollX = 0;
-
 		private int _tabBackgroundResId = Resource.Drawable.pagerslidingtabstrip_background_tab;
+		private bool _shouldObserve = false;
+		private bool _inNotifyDataSetChanged;
+
+		#endregion
+
+		#region properties
+
+		private Lazy<TextTabProvider> _textTabProvider;
+
+		/// <summary>
+		/// Gets a reference to the default TextTabProvider that can be used to help manage how text is displayed 
+		/// in your custom tab layout.
+		/// </summary>
+		public TextTabProvider DefaultTextTabProvider
+		{
+			get
+			{
+				if (_adapter == null || _textTabProvider == null)
+					return null;
+				return _textTabProvider.Value;
+			}
+		}
+
+		private Lazy<IconTabProvider> _iconTabProvider;
+
+		/// <summary>
+		/// Gets a reference to the default IconTabProvider that can be used to help manage how a tab icon is
+		/// displayed in your custom layout.  Please note - the adapter that is set on this control must support 
+		/// the IIconTabProvider interface in order for this to work.
+		/// </summary>
+		public IconTabProvider DefaultIconTabProvider
+		{
+			get
+			{
+				if (_adapter == null || _iconTabProvider == null)
+					return null;
+				return _iconTabProvider.Value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the adapter that is providing view pages but potentially also
+		/// tabs.
+		/// </summary>
+		/// <value>
+		/// The adapter.
+		/// </value>
+		protected PagerAdapter Adapter
+		{
+			get
+			{
+				return _adapter;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the color of the selected tab indicator.
+		/// </summary>
+		/// <value>
+		/// The color of the indicator.
+		/// </value>
+		public Color IndicatorColor
+		{
+			get
+			{
+				return this._indicatorColor;
+			}
+			set
+			{
+				this._indicatorColor = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the height of the indicator, in DPs
+		/// </summary>
+		/// <value>
+		/// The height of the indicator.
+		/// </value>
+		public int IndicatorHeight
+		{
+			get
+			{
+				return this._indicatorHeight;
+			}
+			set
+			{
+				this._indicatorHeight = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the color of the underline drawn across the bottom of the whole tab strip.
+		/// </summary>
+		/// <value>
+		/// The color of the underline.
+		/// </value>
+		public Color UnderlineColor
+		{
+			get
+			{
+				return this._underlineColor;
+			}
+			set
+			{
+				this._underlineColor = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the color of the divider drawn between each tab.
+		/// </summary>
+		/// <value>
+		/// The color of the divider.
+		/// </value>
+		public Color DividerColor
+		{
+			get
+			{
+				return this._dividerColor;
+			}
+			set
+			{
+				this._dividerColor = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the height of the underline drawn across the bottom of the tab strip, in DPs.
+		/// </summary>
+		/// <value>
+		/// The height of the underline.
+		/// </value>
+		public int UnderlineHeight
+		{
+			get
+			{
+				return _underlineHeight;
+			}
+			set
+			{
+				_underlineHeight = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the padding, in DPs, either side of the dividers.
+		/// </summary>
+		/// <value>
+		/// The divider padding.
+		/// </value>
+		public int DividerPadding
+		{
+			get
+			{
+				return _dividerPadding;
+			}
+			set
+			{
+				_dividerPadding = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the scroll offset, in pixels, used when scrolling the control view
+		/// to the tab for the currently selected page.
+		/// </summary>
+		/// <value>
+		/// The scroll offset.
+		/// </value>
+		public int ScrollOffset
+		{
+			get
+			{
+				return _scrollOffset;
+			}
+			set
+			{
+				_scrollOffset = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether tabs should be resized to fill
+		/// the whole control if they are too small, collectively, to fill it.
+		/// </summary>
+		public bool ShouldExpand
+		{
+			get
+			{
+				return _shouldExpand;
+			}
+			set
+			{
+				_shouldExpand = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the text in the tabs should be all capitals.
+		/// </summary>
+		public bool TextAllCaps
+		{
+			get
+			{
+				return _textAllCaps;
+			}
+			set
+			{
+				_textAllCaps = value;
+				//TODO: call something here to force a redraw?
+				UpdateTabStyles();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the size, in pixels, of the text.
+		/// </summary>
+		/// <value>
+		/// The size of the text.
+		/// </value>
+		public int TextSize
+		{
+			get
+			{
+				return _tabTextSize;
+			}
+			set
+			{
+				_tabTextSize = value;
+				UpdateTabStyles();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the color of the text displayed in the tabs.
+		/// </summary>
+		/// <value>
+		/// The color of the text.
+		/// </value>
+		public Color TextColor
+		{
+			get
+			{
+				return _tabTextColor;
+			}
+			set
+			{
+				_tabTextColor = value;
+				UpdateTabStyles();
+			}
+		}
+
+		/// <summary>
+		/// Gets the typeface used to draw the tab text.
+		/// </summary>
+		/// <value>
+		/// The typeface.
+		/// </value>
+		public Typeface Typeface
+		{
+			get
+			{
+				return _tabTypeface;
+			}
+		}
+
+		/// <summary>
+		/// Gets the typeface style used to draw the tab text.
+		/// </summary>
+		/// <value>
+		/// The typeface style.
+		/// </value>
+		public TypefaceStyle TypefaceStyle
+		{
+			get
+			{
+				return _tabTypefaceStyle;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the tab background resource ID.
+		/// </summary>
+		public int TabBackground
+		{
+			get
+			{
+				return _tabBackgroundResId;
+			}
+			set
+			{
+				_tabBackgroundResId = value;
+				UpdateTabStyles();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the padding either side of each tab.
+		/// </summary>
+		/// <value>
+		/// The tab padding left right.
+		/// </value>
+		public int TabPaddingLeftRight
+		{
+			get
+			{
+				return _tabPadding;
+			}
+			set
+			{
+				_tabPadding = value;
+				UpdateTabStyles();
+			}
+		}
+
+		#endregion
+
+		#region events
+
+		/// <summary>
+		/// Raised when a page is selected.  Subscribe to this instead of the associated ViewPager's
+		/// PageSelected event.
+		/// </summary>
+		public event EventHandler<ViewPager.PageSelectedEventArgs> PageSelected;
+		/// <summary>
+		/// Raised when the pager's scroll state changes.  Subscribe to this instead of the associated
+		/// ViewPager's PageScrollStateChanged event.
+		/// </summary>
+		public event EventHandler<ViewPager.PageScrollStateChangedEventArgs> PageScrollStateChanged;
+		/// <summary>
+		/// Raised when the pager scrolls.  Subscribe to this instead of the associated ViewPager's
+		/// PageScrolled event.
+		/// </summary>
+		public event EventHandler<ViewPager.PageScrolledEventArgs> PageScrolled;
+
+		#endregion
 
 		private static int[] ATTRS = new int[] {
 			Android.Resource.Attribute.TextSize,
 			Android.Resource.Attribute.TextColor
 		};
+
+		#region construction
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PagerSlidingTabStrip"/> class.
@@ -195,43 +561,7 @@ namespace PagerSlidingTabStrip
 			_expandedTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MatchParent, 1.0f);
 		}
 
-		/// <summary>
-		/// Raised when a page is selected.  Subscribe to this instead of the associated ViewPager's
-		/// PageSelected event.
-		/// </summary>
-		public event EventHandler<ViewPager.PageSelectedEventArgs> PageSelected;
-		/// <summary>
-		/// Raised when the pager's scroll state changes.  Subscribe to this instead of the associated
-		/// ViewPager's PageScrollStateChanged event.
-		/// </summary>
-		public event EventHandler<ViewPager.PageScrollStateChangedEventArgs> PageScrollStateChanged;
-		/// <summary>
-		/// Raised when the pager scrolls.  Subscribe to this instead of the associated ViewPager's
-		/// PageScrolled event.
-		/// </summary>
-		public event EventHandler<ViewPager.PageScrolledEventArgs> PageScrolled;
-
-		private class PagerAdapterDataSetObserver : DataSetObserver
-		{
-			private readonly PagerSlidingTabStrip TabStrip;
-
-			public PagerAdapterDataSetObserver(PagerSlidingTabStrip tabStrip)
-			{
-				TabStrip = tabStrip;
-			}
-
-			protected PagerAdapterDataSetObserver(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
-
-			public override void OnChanged()
-			{
-				TabStrip.NotifyDataSetChanged();
-			}
-
-			public override void OnInvalidated()
-			{
-				TabStrip.NotifyDataSetChanged();
-			}
-		}
+		#endregion
 
 		/// <summary>
 		/// Sets the view pager for this instance.
@@ -240,18 +570,128 @@ namespace PagerSlidingTabStrip
 		/// <exception cref="System.ArgumentException">ViewPager does not have adapter instance.;pager</exception>
 		public void SetViewPager(ViewPager pager)
 		{
-			this._pager = pager;
-
+			if (pager == null)
+				return;
 			if (pager.Adapter == null)
 			{
 				throw new ArgumentException("ViewPager does not have adapter instance.", "pager");
 			}
-			pager.Adapter.RegisterDataSetObserver(new PagerAdapterDataSetObserver(this));
-			pager.PageScrolled += pager_PageScrolled;
-			pager.PageScrollStateChanged += pager_PageScrollStateChanged;
-			pager.PageSelected += pager_PageSelected;
+			//changes made here to be more tolerant of being set to the same pager or to a pager with
+			//the same adapter, or to the same pager with a different adapter.
+			if (_pager != pager)
+			{
+				if (_pager != null)
+				{
+					pager.PageScrolled -= pager_PageScrolled;
+					pager.PageScrollStateChanged -= pager_PageScrollStateChanged;
+					pager.PageSelected -= pager_PageSelected;
+				}
+				this._pager = pager;
+				pager.PageScrolled += pager_PageScrolled;
+				pager.PageScrollStateChanged += pager_PageScrollStateChanged;
+				pager.PageSelected += pager_PageSelected;
+			}
+
+			if (_adapter != pager.Adapter)
+			{
+				if (_adapter != null && _observer != null)
+				{
+					_adapter.UnregisterDataSetObserver(_observer);
+				}
+
+				_adapter = pager.Adapter;
+				//re-create the Lazys for the default text and tab providers
+				_textTabProvider = new Lazy<TextTabProvider>(() => new TextTabProvider(Context, _adapter));
+				_iconTabProvider = new Lazy<IconTabProvider>(() => new IconTabProvider(Context, _adapter));
+				//avoid recycling any previous views.
+				_tabsContainer.RemoveAllViews();
+
+				var newProvider = SelectTabProvider();
+				if (newProvider != _tabProvider && _tabProvider != null)
+				{
+					//good housekeeping
+					_tabProvider.TabUpdated -= _tabProvider_TabUpdated;
+					_tabProvider.TabUpdateRequired -= _tabProvider_TabUpdateRequired;
+				}
+
+				_tabProvider = newProvider;
+				_tabProvider.TabUpdated += _tabProvider_TabUpdated;
+				_tabProvider.TabUpdateRequired += _tabProvider_TabUpdateRequired;
+
+				if (_observer == null)
+					_observer = new PagerAdapterDataSetObserver(this);
+
+				_adapter.RegisterDataSetObserver(_observer);
+			}
+
 
 			NotifyDataSetChanged();
+		}
+
+
+		/// <summary>
+		/// Called in SetViewPager to create the correct ITabProvider instance for constructing tabs from
+		/// the current PagerAdapter (or other ambient information).  The default implementation looks
+		/// for an ITabProvider implementation on the PagerAdapter itself, if that's not found it looks for
+		/// IIconTabProvider instead (creating an IconTabProvider instance if so); otherwise it falls back to
+		/// the TextTabProvider class.
+		/// 
+		/// Your override can use the protected <see cref="Adapter"/> property to read the current adapter.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual ITabProvider SelectTabProvider()
+		{
+			ITabProvider tabProvider = _adapter as ITabProvider;
+
+			if (tabProvider != null)
+			{
+				return tabProvider;
+			}
+			else
+			{
+				//if the adapter supports the IIconTabProvider interface, then create
+				//an instance of the IconTabProvider, otherwise use the TextTabProvider.
+				if (_adapter is IIconTabProvider)
+					return _iconTabProvider.Value;
+				else
+					return _textTabProvider.Value;
+			}
+		}
+
+		void _tabProvider_TabUpdated(object sender, TabUpdateEventArgs e)
+		{
+			//TODO: Consider a 'StartTabUpdates' and 'EndTabUpdates' method - *this* event handler would
+			//not request layout or invalidate after StartTabUpdates and before EndTabUpdates, instead keeping count
+			//of each of the tabs that raise the event.  
+			//When EndTabUpdates is called, if one ore tabs fired that event, then a re-layout and redraw will be
+			//requested.
+
+			//don't request layout and redraw if NotifyDataSetChanged is currently being called.
+			//This is because in that method we call the tab provider's UpdateTab method, which *should*
+			//raise this method if the implementation has been done properly.
+			if (_inNotifyDataSetChanged)
+			{
+				return;
+			}
+			RequestLayout();
+			Invalidate();
+		}
+
+		void _tabProvider_TabUpdateRequired(object sender, TabUpdateEventArgs e)
+		{
+			if (e.Position >= _tabCount)
+				return;
+
+			var container = _tabsContainer.GetChildAt(e.Position) as FrameLayout;
+			if (container == null || container.ChildCount != 1)
+				return;
+			//instruct the provider to do the update (yes, the event itself has been raised
+			//by the provider, however it doesn't have the ability to grab the actual view being
+			//used, so it's all done by events instead.
+			//This, actually, then allows multiple controls to be assigned from one provider (should you ever need to)
+			_tabProvider.UpdateTab(container.GetChildAt(0), this, e.Position, e.Hint);
+			//if the provider deems an update necessary, it should then raise the TabUpdated event, 
+			//triggering a re-layout and Invalidate (see method above).
 		}
 
 		void pager_PageSelected(object sender, ViewPager.PageSelectedEventArgs e)
@@ -304,52 +744,114 @@ namespace PagerSlidingTabStrip
 			}
 		}
 
-		//public void SetOnPageChangeListener(Android.Support.V4.View.ViewPager.IOnPageChangeListener listener)
-		//{ //TODO: Change this to use events instead
-		//	this._delegatePageListener = listener;
-		//}
-
-
 
 		/// <summary>
 		/// Used to tell this instance that the underlying tabs have changed.
 		/// </summary>
 		public void NotifyDataSetChanged()
-		{	
-
-			_tabsContainer.RemoveAllViews();
-			var adapter = _pager.Adapter;
-			_tabCount = adapter.Count;
-			IIconTabProvider iconAdapter = adapter as IIconTabProvider;
-			if (iconAdapter != null)
-			{
-				for (int i = 0; i < _tabCount; i++)
-				{
-					AddIconTab(i, iconAdapter.GetPageIconResId(i));
-				}
-			}
-			else
-			{
-				for (int i = 0; i < _tabCount; i++)
-				{
-					AddTextTab(i, adapter.GetPageTitle(i));
-				}
-			}
-
+		{
+			_inNotifyDataSetChanged = true;
+			int currentViewCount = _tabsContainer.ChildCount;
+			_tabCount = _adapter.Count;
+			int viewsToAddCount = _tabCount - currentViewCount;
 			_checkedTabWidths = false;
+
+			//means we already have too many views.
+			if (viewsToAddCount < 0)
+			{
+#if DEBUG
+				Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("Need to delete {0} tabs as the number of tabs has reduced", Math.Abs(viewsToAddCount)));
+#endif
+				while (viewsToAddCount++ != 0)
+				{
+					_tabsContainer.RemoveViewAt(_tabCount);
+				}
+			}
+
+			FrameLayout tabContainer;
+			View toRecycle;
+			View newView = null;
+
+			for (int i = 0; i < _tabCount; i++)
+			{
+				if (i < _tabsContainer.ChildCount)
+				{
+					tabContainer = _tabsContainer.GetChildAt(i) as FrameLayout;
+
+					if (tabContainer != null)
+					{
+#if DEBUG
+					Android.Util.Log.Info("PagerSlidingTabStrip", "Found old tab FrameLayout, looking to recycle its current child");
+#endif
+						//the upshot of this is that is another component starts mucking about with our shizzle
+						//and inserting other types of views along with our tabs, this algorithm is going to 
+						//break and tabs won't be created properly.
+						if (tabContainer.ChildCount == 1)
+						{
+							toRecycle = tabContainer.GetChildAt(0);
+							newView = _tabProvider.GetTab(this, tabContainer, i, toRecycle);
+
+							if (newView != toRecycle)
+							{
+#if DEBUG
+								Android.Util.Log.Info("PagerSlidingTabStrip", "Old tab not recycled by ITabProvider implementation - adding new tab");
+#endif
+								tabContainer.RemoveViewAt(0);
+								tabContainer.AddView(newView);
+							}
+						}
+					}
+				}
+				else
+				{
+#if DEBUG
+					Android.Util.Log.Info("PagerSlidingTabStrip", "Creating brand new FrameLayout for tab and its content");
+#endif
+					tabContainer = new FrameLayout(Context);
+					//tabContainer.LayoutParameters = _defaultTabLayoutParams;
+					newView = _tabProvider.GetTab(this, tabContainer, i);
+					tabContainer.AddView(newView);
+					AddTabClick(tabContainer, i);
+					_tabsContainer.AddView(tabContainer);
+				}
+
+				if (newView != null)
+					_tabProvider.UpdateTab(newView, this, i);
+			}
+
 			UpdateTabStyles();
 
 			if (!_globalLayoutSubscribed)
-			{ 
+			{
 				ViewTreeObserver.GlobalLayout += ViewTreeObserver_GlobalLayout;
 				_globalLayoutSubscribed = true;
 			}
 			_shouldObserve = true;
+			_inNotifyDataSetChanged = false;
 			RequestLayout();
 			Invalidate();
 		}
 
-		private bool _shouldObserve = false;
+		private void AddTabClick(View v, int position)
+		{
+			v.Click += (o, e) =>
+			{
+				SetCurrentItem(position, true);
+			};
+		}
+
+		/// <summary>
+		/// Sets the current item in both the view pager and the tab control.  This is a 
+		/// wrapper for calling the underlying adapter's SetCurrentItem if the caller does
+		/// not have access to that object.
+		/// </summary>
+		/// <param name="position">The position.</param>
+		/// <param name="smoothScroll">if set to <c>true</c> [smooth scroll].</param>
+		public void SetCurrentItem(int position, bool smoothScroll)
+		{
+			_pager.SetCurrentItem(position, smoothScroll);
+		}
+
 		void ViewTreeObserver_GlobalLayout(object sender, EventArgs e)
 		{
 			//altered from Java version to use a flag because unsubscribing throws a NotSupportedException
@@ -370,169 +872,70 @@ namespace PagerSlidingTabStrip
 			}
 		}
 
-		private void AddTextTab(int position, String title)
-		{
-			TextView tab = new TextView(Context);
-
-			tab.SetText(title, TextView.BufferType.Normal);
-			tab.Focusable = true;
-			tab.Gravity = GravityFlags.Center;
-			tab.SetSingleLine();
-
-			tab.Click += (o, e) =>
-			{
-				_pager.SetCurrentItem(position, true);
-			};
-
-			_tabsContainer.AddView(tab);
-
-		}
-
-		private void AddIconTab(int position, int resId)
-		{
-
-			ImageButton tab = new ImageButton(Context);
-			tab.Focusable = true;
-			tab.SetImageResource(resId);
-
-			tab.Click += (o, e) =>
-			{
-				_pager.SetCurrentItem(position, true);
-			};
-
-			_tabsContainer.AddView(tab);
-		}
-
 		private void UpdateTabStyles()
 		{
-
 			for (int i = 0; i < _tabCount; i++)
 			{
-
 				View v = _tabsContainer.GetChildAt(i);
 
 				v.LayoutParameters = _defaultTabLayoutParams;
 				v.SetBackgroundResource(_tabBackgroundResId);
-				//if (_shouldExpand)
-				//{
-				//	v.SetPadding(0, 0, 0, 0);
-				//}
-				//else
-				//{
-					v.SetPadding(_tabPadding, 0, _tabPadding, 0);
-				//}
+				v.SetPadding(_tabPadding, 0, _tabPadding, 0);
 
-				if (v is TextView)
+				FrameLayout vLayout = v as FrameLayout;
+				if (vLayout != null && vLayout.ChildCount == 1)
 				{
-
-					TextView tab = (TextView)v;
-					tab.SetTextSize(ComplexUnitType.Px, _tabTextSize);
-					tab.SetTypeface(_tabTypeface, _tabTypefaceStyle);
-					tab.SetTextColor(_tabTextColor);
-
-					// if you compare to the java version, it branches based on the running version.
-					// we can't do that as our available APIs are limited to the minimum SDK.
-					if (_textAllCaps)
-					{
-						tab.SetText(tab.Text.ToUpper(), TextView.BufferType.Normal);
-					}
+					//the first and only child of the framelayout is the 
+					//view that was created by the tab provider - fetch it.
+					v = vLayout.GetChildAt(0);
+					_tabProvider.UpdateTabStyle(v, this, i);
 				}
 			}
 		}
 
 		/// <summary>
+		/// Implementation of the base method.  Tabs are measure in here to see if they overflow
+		/// or not.  If not, and ShouldExpand is true, then their layout is changed so that they
+		/// are all given equal share of the total width of the container.  This calculation is 
+		/// performed once and only repeated if a change occurs in the tabs that could affect layout.
 		/// </summary>
-		/// <param name="widthMeasureSpec">horizontal space requirements as imposed by the parent.
-		/// The requirements are encoded with
-		/// <c><see cref="T:Android.Views.View+MeasureSpec" /></c>.</param>
-		/// <param name="heightMeasureSpec">vertical space requirements as imposed by the parent.
-		/// The requirements are encoded with
-		/// <c><see cref="T:Android.Views.View+MeasureSpec" /></c>.</param>
-		/// <since version="Added in API level 1" />
-		///   <altmember cref="P:Android.Views.View.MeasuredWidth" />
-		///   <altmember cref="P:Android.Views.View.MeasuredHeight" />
-		///   <altmember cref="M:Android.Views.View.SetMeasuredDimension(System.Int32, System.Int32)" />
-		///   <altmember cref="M:Android.Views.View.get_SuggestedMinimumHeight" />
-		///   <altmember cref="M:Android.Views.View.get_SuggestedMinimumWidth" />
-		///   <altmember cref="M:Android.Views.View.MeasureSpec.GetMode(System.Int32)" />
-		///   <altmember cref="M:Android.Views.View.MeasureSpec.GetSize(System.Int32)" />
-		/// <remarks>
-		///   <para tool="javadoc-to-mdoc" />
-		///   <para tool="javadoc-to-mdoc">
-		/// Measure the view and its content to determine the measured width and the
-		/// measured height. This method is invoked by <c><see cref="M:Android.Views.View.Measure(System.Int32, System.Int32)" /></c> and
-		/// should be overriden by subclasses to provide accurate and efficient
-		/// measurement of their contents.
-		///   </para>
-		///   <para tool="javadoc-to-mdoc">
-		///   <i>CONTRACT:</i> When overriding this method, you
-		///   <i>must</i> call <c><see cref="M:Android.Views.View.SetMeasuredDimension(System.Int32, System.Int32)" /></c> to store the
-		/// measured width and height of this view. Failure to do so will trigger an
-		///   <c>IllegalStateException</c>, thrown by
-		///   <c><see cref="M:Android.Views.View.Measure(System.Int32, System.Int32)" /></c>. Calling the superclass'
-		///   <c><see cref="M:Android.Views.View.OnMeasure(System.Int32, System.Int32)" /></c> is a valid use.
-		///   </para>
-		///   <para tool="javadoc-to-mdoc">
-		/// The base class implementation of measure defaults to the background size,
-		/// unless a larger size is allowed by the MeasureSpec. Subclasses should
-		/// override <c><see cref="M:Android.Views.View.OnMeasure(System.Int32, System.Int32)" /></c> to provide better measurements of
-		/// their content.
-		///   </para>
-		///   <para tool="javadoc-to-mdoc">
-		/// If this method is overridden, it is the subclass's responsibility to make
-		/// sure the measured height and width are at least the view's minimum height
-		/// and width (<c><see cref="M:Android.Views.View.get_SuggestedMinimumHeight" /></c> and
-		///   <c><see cref="M:Android.Views.View.get_SuggestedMinimumWidth" /></c>).
-		///   </para>
-		///   <para tool="javadoc-to-mdoc">
-		///   <format type="text/html">
-		///   <a href="http://developer.android.com/reference/android/view/View.html#onMeasure(int, int)" target="_blank">[Android Documentation]</a>
-		///   </format>
-		///   </para>
-		/// </remarks>
+		/// <param name="widthMeasureSpec"></param>
+		/// <param name="heightMeasureSpec"></param>
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
 			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
 
 			if (!_shouldExpand || MeasureSpec.GetMode(widthMeasureSpec) == MeasureSpecMode.Unspecified)
 			{
-				Android.Util.Log.Info("PagerSlidingTabStrip", "Leaving OnMeasure as _shouldExpand is false or widthMeasureSpec is Unspecified");
 				return;
 			}
 
 			int myWidth = MeasuredWidth;
 			int childWidth = 0;
-			Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("_tabCount is {0} in OnMeasure", _tabCount));
 			for (int i = 0; i < _tabCount; i++)
 			{
 				childWidth += _tabsContainer.GetChildAt(i).MeasuredWidth;
 			}
 
-			Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("childWidth is {0}, _checkedTabWidths is {1}, myWidth is {2}", childWidth, _checkedTabWidths, myWidth));
-
 			if (!_checkedTabWidths && childWidth > 0 && myWidth > 0)
 			{
 				if (childWidth <= myWidth)
 				{
-					Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("measured childWidth less than myWidth - setting all children to expanded"));
 					for (int i = 0; i < _tabCount; i++)
 					{
 						var v = _tabsContainer.GetChildAt(i);
 						v.LayoutParameters = _expandedTabLayoutParams;
-						//v.Measure(widthMeasureSpec, heightMeasureSpec);
 					}
 				}
 				else
 				{
-					Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("measured childWidth greater than myWidth - setting all children to default"));
 					for (int i = 0; i < _tabCount; i++)
 					{
 						var v = _tabsContainer.GetChildAt(i);
 						v.LayoutParameters = _defaultTabLayoutParams;
-						//v.Measure(widthMeasureSpec, heightMeasureSpec);
 					}
 				}
-				Android.Util.Log.Info("PagerSlidingTabStrip", string.Format("Calling base OnMeasure again and setting _checkedTabWidths to true"));
+				//re-measure now as we've potentially altered the widths of the child tabs
 				base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
 				_checkedTabWidths = true;
 			}
@@ -622,24 +1025,7 @@ namespace PagerSlidingTabStrip
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the color of the selected tab indicator.
-		/// </summary>
-		/// <value>
-		/// The color of the indicator.
-		/// </value>
-		public Color IndicatorColor
-		{
-			get
-			{
-				return this._indicatorColor;
-			}
-			set
-			{
-				this._indicatorColor = value;
-				Invalidate();
-			}
-		}
+
 
 		/// <summary>
 		/// Sets the <see cref="IndicatorColor"/> to a color resource from its ID.
@@ -648,44 +1034,6 @@ namespace PagerSlidingTabStrip
 		public void SetIndicatorColor(int resId)
 		{
 			IndicatorColor = Resources.GetColor(resId);
-		}
-
-		/// <summary>
-		/// Gets or sets the height of the indicator, in DPs
-		/// </summary>
-		/// <value>
-		/// The height of the indicator.
-		/// </value>
-		public int IndicatorHeight
-		{
-			get
-			{
-				return this._indicatorHeight;
-			}
-			set
-			{
-				this._indicatorHeight = value;
-				Invalidate();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the color of the underline drawn across the bottom of the whole tab strip.
-		/// </summary>
-		/// <value>
-		/// The color of the underline.
-		/// </value>
-		public Color UnderlineColor
-		{
-			get
-			{
-				return this._underlineColor;
-			}
-			set
-			{
-				this._underlineColor = value;
-				Invalidate();
-			}
 		}
 
 		/// <summary>
@@ -698,163 +1046,12 @@ namespace PagerSlidingTabStrip
 		}
 
 		/// <summary>
-		/// Gets or sets the color of the divider drawn between each tab.
-		/// </summary>
-		/// <value>
-		/// The color of the divider.
-		/// </value>
-		public Color DividerColor
-		{
-			get
-			{
-				return this._dividerColor;
-			}
-			set
-			{
-				this._dividerColor = value;
-				Invalidate();
-			}
-		}
-
-		/// <summary>
 		/// Sets the <see cref="DividerColor"/> to a color resource from its ID.
 		/// </summary>
 		/// <param name="resId">The res id.</param>
 		public void SetDividerColor(int resId)
 		{
 			DividerColor = Resources.GetColor(resId);
-		}
-
-		/// <summary>
-		/// Gets or sets the height of the underline drawn across the bottom of the tab strip, in DPs.
-		/// </summary>
-		/// <value>
-		/// The height of the underline.
-		/// </value>
-		public int UnderlineHeight
-		{
-			get
-			{
-				return _underlineHeight;
-			}
-			set
-			{
-				_underlineHeight = value;
-				Invalidate();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the padding, in DPs, either side of the dividers.
-		/// </summary>
-		/// <value>
-		/// The divider padding.
-		/// </value>
-		public int DividerPadding
-		{
-			get
-			{
-				return _dividerPadding;
-			}
-			set
-			{
-				_dividerPadding = value;
-				Invalidate();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the scroll offset.
-		/// 
-		/// Note from Andras Zoltan - in truth I'm not entirely sure why you'd want to set this.
-		/// </summary>
-		/// <value>
-		/// The scroll offset.
-		/// </value>
-		public int ScrollOffset
-		{
-			get
-			{
-				return _scrollOffset;
-			}
-			set
-			{
-				_scrollOffset = value;
-				Invalidate();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether [should expand].
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if [should expand]; otherwise, <c>false</c>.
-		/// </value>
-		public bool ShouldExpand
-		{
-			get
-			{
-				return _shouldExpand;
-			}
-			set
-			{
-				_shouldExpand = value;
-				Invalidate();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the text in the tabs should be all capitals.
-		/// </summary>
-		public bool TextAllCaps
-		{
-			get
-			{
-				return _textAllCaps;
-			}
-			set
-			{
-				_textAllCaps = value;
-				//TODO: call something here to force a redraw?
-				UpdateTabStyles();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the size, in dps, of the text.
-		/// </summary>
-		/// <value>
-		/// The size of the text.
-		/// </value>
-		public int TextSize
-		{
-			get
-			{
-				return _tabTextSize;
-			}
-			set
-			{
-				_tabTextSize = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the color of the text displayed in the tabs.
-		/// </summary>
-		/// <value>
-		/// The color of the text.
-		/// </value>
-		public Color TextColor
-		{
-			get
-			{
-				return _tabTextColor;
-			}
-			set
-			{
-				_tabTextColor = value;
-				UpdateTabStyles();
-			}
 		}
 
 		/// <summary>
@@ -865,34 +1062,6 @@ namespace PagerSlidingTabStrip
 		{
 			this._tabTextColor = Resources.GetColor(resId);
 			UpdateTabStyles();
-		}
-
-		/// <summary>
-		/// Gets the typeface used to draw the tab text.
-		/// </summary>
-		/// <value>
-		/// The typeface.
-		/// </value>
-		public Typeface Typeface
-		{
-			get
-			{
-				return _tabTypeface;
-			}
-		}
-
-		/// <summary>
-		/// Gets the typeface style used to draw the tab text.
-		/// </summary>
-		/// <value>
-		/// The typeface style.
-		/// </value>
-		public TypefaceStyle TypefaceStyle
-		{
-			get
-			{
-				return _tabTypefaceStyle;
-			}
 		}
 
 		/// <summary>
@@ -908,41 +1077,6 @@ namespace PagerSlidingTabStrip
 			this._tabTypeface = typeface;
 			this._tabTypefaceStyle = style;
 			UpdateTabStyles();
-		}
-
-		/// <summary>
-		/// Gets or sets the tab background resource ID.
-		/// </summary>
-		public int TabBackground
-		{
-			get
-			{
-				return _tabBackgroundResId;
-			}
-			set
-			{
-				_tabBackgroundResId = value;
-				UpdateTabStyles();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the padding either side of each tab.
-		/// </summary>
-		/// <value>
-		/// The tab padding left right.
-		/// </value>
-		public int TabPaddingLeftRight
-		{
-			get
-			{
-				return _tabPadding;
-			}
-			set
-			{
-				_tabPadding = value;
-				UpdateTabStyles();
-			}
 		}
 
 		/// <summary>

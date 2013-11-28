@@ -46,15 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FragmentTabProviderPagerAdapterBase.cs" />
+    <Compile Include="IconTabProvider.cs" />
+    <Compile Include="ITabProvider.cs" />
     <Compile Include="PagerSlidingTabStrip.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TabEventArgs.cs" />
+    <Compile Include="TabProviderBase.cs" />
+    <Compile Include="TabUpdateEventArgs.cs" />
+    <Compile Include="TextTabProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PagerSlidingTabStrip.Net.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="Resources\AboutResources.txt" />
+    <AndroidResource Include="Resources\layout\pagerslidingtabstrip_texttab.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
