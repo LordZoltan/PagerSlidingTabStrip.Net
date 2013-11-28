@@ -677,21 +677,29 @@ namespace PagerSlidingTabStrip
 			Invalidate();
 		}
 
-		void _tabProvider_TabUpdateRequired(object sender, TabUpdateEventArgs e)
+		/// <summary>
+		/// Call this to force a tab to update it's UI and, optionally, have the tab control re-layout
+		/// and redraw.
+		/// </summary>
+		/// <param name="position">The position.</param>
+		/// <param name="hint">The hint.</param>
+		public void UpdateTab(int position, string hint = null)
 		{
-			if (e.Position >= _tabCount)
+			if (position >= _tabCount)
 				return;
 
-			var container = _tabsContainer.GetChildAt(e.Position) as FrameLayout;
+			var container = _tabsContainer.GetChildAt(position) as FrameLayout;
 			if (container == null || container.ChildCount != 1)
 				return;
-			//instruct the provider to do the update (yes, the event itself has been raised
-			//by the provider, however it doesn't have the ability to grab the actual view being
-			//used, so it's all done by events instead.
-			//This, actually, then allows multiple controls to be assigned from one provider (should you ever need to)
-			_tabProvider.UpdateTab(container.GetChildAt(0), this, e.Position, e.Hint);
+			//instruct the provider to do the update
+			_tabProvider.UpdateTab(container.GetChildAt(0), this, position, hint);
 			//if the provider deems an update necessary, it should then raise the TabUpdated event, 
-			//triggering a re-layout and Invalidate (see method above).
+			//triggering a re-layout and Invalidate here
+		}
+
+		void _tabProvider_TabUpdateRequired(object sender, TabUpdateEventArgs e)
+		{
+			UpdateTab(e.Position, e.Hint);
 		}
 
 		void pager_PageSelected(object sender, ViewPager.PageSelectedEventArgs e)

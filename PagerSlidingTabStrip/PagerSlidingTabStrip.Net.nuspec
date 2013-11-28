@@ -1,20 +1,18 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>PagerSlidingTabStrip.Net</id>
-    <version>1.1.31128.1503</version>
+    <version>1.1.31128.2215</version>
     <title>PagerSlidingTabStrip for Xamarin.Android</title>
     <authors>Andras.Zoltan</authors>
     <owners>Andras.Zoltan</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/LordZoltan/PagerSlidingTabStrip.Net</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>
-			A greatly enhanced and customisable Tab control for use with ViewPagers. Offers complete control over each tab's contents and how they are updated as things change.
+    <description>A greatly enhanced and customisable Tab control for use with ViewPagers. Offers complete control over each tab's contents and how they are updated as things change.
 
-			Started originally as a .Net port of the PagerSlidingTabStrip component, originally written by Andreas Stütz (found at https://github.com/astuetz/PagerSlidingTabStrip). It now has many more customisation hooks.
-		</description>
-    <releaseNotes>Complete restructure of tab creation to allow completely custom views and fine-grained control over tab layout updates etc.</releaseNotes>
+			Started originally as a .Net port of Andreas Stütz's Java project (found at https://github.com/astuetz/PagerSlidingTabStrip). It now has many more customisation hooks.</description>
+    <releaseNotes>Add UpdateTab method to the control itself, allowing external objects trigger updates (say in response to come global state changing)</releaseNotes>
     <copyright>2013 Andras Zoltan</copyright>
     <tags>xamarin android tabstrip viewpager pagerslidingtabstrip</tags>
     <frameworkAssemblies>
