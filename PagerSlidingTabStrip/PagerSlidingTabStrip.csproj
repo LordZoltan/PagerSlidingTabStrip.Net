@@ -54,6 +54,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TabEventArgs.cs" />
     <Compile Include="TabProviderBase.cs" />
+    <Compile Include="CustomTabProviderFactory.cs" />
+    <Compile Include="TabProviderFactory.cs" />
     <Compile Include="TabUpdateEventArgs.cs" />
     <Compile Include="TextTabProvider.cs" />
   </ItemGroup>

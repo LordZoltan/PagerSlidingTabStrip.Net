@@ -97,7 +97,14 @@ namespace PagerSlidingTabStrip
 		private ViewPager _pager;
 		private PagerAdapterDataSetObserver _observer;
 		private PagerAdapter _adapter;
-		private ITabProvider _tabProvider; //always set - both text tabs and icons are implemented via providers now
+		private TabProviderFactory _tabProviderFactory;	
+		/// <summary>
+		/// This is created by the _tabProviderFactory 
+		/// </summary>
+		private ITabProvider _tabProvider;
+		private Lazy<ITabProvider> _textTabProvider;
+		private Lazy<ITabProvider> _iconTabProvider;
+
 		private int _tabCount;
 		private int _currentPosition = 0;
 		private float _currentPositionOffset = 0f;
@@ -129,13 +136,42 @@ namespace PagerSlidingTabStrip
 
 		#region properties
 
-		private Lazy<TextTabProvider> _textTabProvider;
+		private static readonly TabProviderFactory _defaultProviderFactory = new TabProviderFactory();
+		/// <summary>
+		/// Used as the default <see cref="ITabProviderFactory"/> if you don't set a custom one in <see cref="SetViewPager"/>
+		/// </summary>
+		public static TabProviderFactory DefaultTabProviderFactory
+		{
+			get
+			{
+				return _defaultTabProviderFactory;
+			}
+		}
+		
+		/// <summary>
+		/// The tab provider factory used by this instance to get a tab provider to be used to manage all
+		/// the tabs that are displayed in this control.  Defaults to <see cref="DefaultTabProviderFactory"/>.
+		/// 
+		/// Note that more complex implementations of ITabProvider can utilise this factory to help them to create
+		/// non-homogenous tab lists (e.g. mixing icon and text tabs with those that have more complex layouts).
+		/// </summary>
+		public TabProviderFactory TabProviderFactory
+		{
+			get
+			{
+				return _tabProviderFactory ?? _defaultProviderFactory;
+			}
+		}
+
 
 		/// <summary>
 		/// Gets a reference to the default TextTabProvider that can be used to help manage how text is displayed 
-		/// in your custom tab layout.
+		/// in your custom tab layout.  The underlying instance is created by the current <see cref="TabProviderFactory"/>
+		/// the first time you use it.
+		/// 
+		/// Most of the time, this will be an instance of the <see cref="TextTabProvider"/> type.
 		/// </summary>
-		public TextTabProvider DefaultTextTabProvider
+		public ITabProvider DefaultTextTabProvider
 		{
 			get
 			{
@@ -145,14 +181,14 @@ namespace PagerSlidingTabStrip
 			}
 		}
 
-		private Lazy<IconTabProvider> _iconTabProvider;
-
 		/// <summary>
-		/// Gets a reference to the default IconTabProvider that can be used to help manage how a tab icon is
-		/// displayed in your custom layout.  Please note - the adapter that is set on this control must support 
-		/// the IIconTabProvider interface in order for this to work.
+		/// Gets a reference to the default provider that can be used to help manage how a tab icon is
+		/// displayed in your custom layout.  The underlying instance is created by the current <see cref="TabProviderFactory"/>
+		/// the first time you use it.
+		/// 
+		/// Most of the time, this will be an instance of the <see cref="IconTabProvider"/> type.
 		/// </summary>
-		public IconTabProvider DefaultIconTabProvider
+		public ITabProvider DefaultIconTabProvider
 		{
 			get
 			{
@@ -567,8 +603,11 @@ namespace PagerSlidingTabStrip
 		/// Sets the view pager for this instance.
 		/// </summary>
 		/// <param name="pager">The pager.</param>
+		/// <param name="tabProviderFactory">The factory to use to select the correct tab provider for the given
+		/// pager, and equally as a factory for more complex tab providers to delegate to if they want to reuse
+		/// .  This also then is set on the .</param>
 		/// <exception cref="System.ArgumentException">ViewPager does not have adapter instance.;pager</exception>
-		public void SetViewPager(ViewPager pager)
+		public void SetViewPager(ViewPager pager, TabProviderFactory tabProviderFactory = null)
 		{
 			if (pager == null)
 				return;
@@ -576,6 +615,10 @@ namespace PagerSlidingTabStrip
 			{
 				throw new ArgumentException("ViewPager does not have adapter instance.", "pager");
 			}
+
+			//the property returns the default factory if set to null here.
+			_tabProviderFactory = tabProviderFactory;
+
 			//changes made here to be more tolerant of being set to the same pager or to a pager with
 			//the same adapter, or to the same pager with a different adapter.
 			if (_pager != pager)
@@ -600,13 +643,14 @@ namespace PagerSlidingTabStrip
 				}
 
 				_adapter = pager.Adapter;
+				_tabProviderFactory = tabProviderFactory;
 				//re-create the Lazys for the default text and tab providers
-				_textTabProvider = new Lazy<TextTabProvider>(() => new TextTabProvider(Context, _adapter));
-				_iconTabProvider = new Lazy<IconTabProvider>(() => new IconTabProvider(Context, _adapter));
-				//avoid recycling any previous views.
+				_textTabProvider = new Lazy<ITabProvider>(() => TabProviderFactory.CreateTextTabProvider(Context, _adapter));
+				_iconTabProvider = new Lazy<ITabProvider>(() => TabProviderFactory.CreateIconTabProvider(Context, _adapter));
+				//avoid recycling any previous views, because we've changed adapters.
 				_tabsContainer.RemoveAllViews();
 
-				var newProvider = SelectTabProvider();
+				var newProvider = TabProviderFactory.CreateTabProvider(Context, _adapter);
 				if (newProvider != _tabProvider && _tabProvider != null)
 				{
 					//good housekeeping
@@ -626,36 +670,6 @@ namespace PagerSlidingTabStrip
 
 
 			NotifyDataSetChanged();
-		}
-
-
-		/// <summary>
-		/// Called in SetViewPager to create the correct ITabProvider instance for constructing tabs from
-		/// the current PagerAdapter (or other ambient information).  The default implementation looks
-		/// for an ITabProvider implementation on the PagerAdapter itself, if that's not found it looks for
-		/// IIconTabProvider instead (creating an IconTabProvider instance if so); otherwise it falls back to
-		/// the TextTabProvider class.
-		/// 
-		/// Your override can use the protected <see cref="Adapter"/> property to read the current adapter.
-		/// </summary>
-		/// <returns></returns>
-		protected virtual ITabProvider SelectTabProvider()
-		{
-			ITabProvider tabProvider = _adapter as ITabProvider;
-
-			if (tabProvider != null)
-			{
-				return tabProvider;
-			}
-			else
-			{
-				//if the adapter supports the IIconTabProvider interface, then create
-				//an instance of the IconTabProvider, otherwise use the TextTabProvider.
-				if (_adapter is IIconTabProvider)
-					return _iconTabProvider.Value;
-				else
-					return _textTabProvider.Value;
-			}
 		}
 
 		void _tabProvider_TabUpdated(object sender, TabUpdateEventArgs e)
@@ -1238,5 +1252,7 @@ namespace PagerSlidingTabStrip
 				#endregion
 			}
 		}
+
+		public static global::PagerSlidingTabStrip.TabProviderFactory _defaultTabProviderFactory { get; set; }
 	}
 }
