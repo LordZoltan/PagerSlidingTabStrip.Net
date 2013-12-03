@@ -871,6 +871,8 @@ namespace PagerSlidingTabStrip
 		/// <param name="smoothScroll">if set to <c>true</c> [smooth scroll].</param>
 		public void SetCurrentItem(int position, bool smoothScroll)
 		{
+			_currentPosition = position;
+			_currentPositionOffset = 0;
 			_pager.SetCurrentItem(position, smoothScroll);
 		}
 
