@@ -97,7 +97,7 @@ namespace PagerSlidingTabStrip
 		private ViewPager _pager;
 		private PagerAdapterDataSetObserver _observer;
 		private PagerAdapter _adapter;
-		private TabProviderFactory _tabProviderFactory;	
+		private TabProviderFactory _tabProviderFactory;
 		/// <summary>
 		/// This is created by the _tabProviderFactory 
 		/// </summary>
@@ -135,8 +135,7 @@ namespace PagerSlidingTabStrip
 		#endregion
 
 		#region properties
-
-		private static readonly TabProviderFactory _defaultProviderFactory = new TabProviderFactory();
+		private static readonly TabProviderFactory _defaultTabProviderFactory = new TabProviderFactory();
 		/// <summary>
 		/// Used as the default <see cref="ITabProviderFactory"/> if you don't set a custom one in <see cref="SetViewPager"/>
 		/// </summary>
@@ -147,7 +146,7 @@ namespace PagerSlidingTabStrip
 				return _defaultTabProviderFactory;
 			}
 		}
-		
+
 		/// <summary>
 		/// The tab provider factory used by this instance to get a tab provider to be used to manage all
 		/// the tabs that are displayed in this control.  Defaults to <see cref="DefaultTabProviderFactory"/>.
@@ -159,7 +158,7 @@ namespace PagerSlidingTabStrip
 		{
 			get
 			{
-				return _tabProviderFactory ?? _defaultProviderFactory;
+				return _tabProviderFactory ?? DefaultTabProviderFactory;
 			}
 		}
 
@@ -1107,27 +1106,38 @@ namespace PagerSlidingTabStrip
 		/// <param name="state">The state that was previously saved by <see cref="OnSaveInstanceState"/></param>
 		protected override void OnRestoreInstanceState(IParcelable state)
 		{
-			SavedState savedState = (SavedState)state;
-			base.OnRestoreInstanceState(savedState.SuperState);
-			_currentPosition = savedState.CurrentPosition;
+			//tried doing this with a nested state class, but Android would not have it.  Must have implemented
+			//it incorrectly.  So using a bundle seemed the most logical solution.
+			Bundle bundle = state as Bundle;
+			if (bundle != null)
+			{
+				IParcelable superState = (IParcelable)bundle.GetParcelable("base");
+				if (superState != null)
+					base.OnRestoreInstanceState(superState);
+				_currentPosition = bundle.GetInt("currentPosition", 0);
+			}
+
 			RequestLayout();
 		}
 
 		/// <summary>
-		/// Override of <see cref="Android.Views.View.OnSaveInstanceState"/>.  Creates a <see cref="SavedState"/> instance with
+		/// Override of <see cref="Android.Views.View.OnSaveInstanceState"/>.  Creates a <see cref="PagerSlidingTabStripState"/> instance with
 		/// the current position, encompassing any base saved state, and returns it.
 		/// </summary>
 		protected override IParcelable OnSaveInstanceState()
 		{
-			IParcelable superState = base.OnSaveInstanceState();
-			SavedState savedState = new SavedState(superState) { CurrentPosition = _currentPosition };
-			return savedState;
+			//see notes in OnRestoreInstanceState about using Bundle.
+			var superState = base.OnSaveInstanceState();
+			Bundle state = new Bundle();
+			state.PutParcelable("base", superState);
+			state.PutInt("currentPosition", _currentPosition);
+			return state;
 		}
 
 		/// <summary>
 		/// The state saved by an instance of PagerSlidingTabStrip during orientation changes etc.
 		/// </summary>
-		protected class SavedState : BaseSavedState
+		public class PagerSlidingTabStripState : BaseSavedState
 		{
 			/// <summary>
 			/// Gets or sets the current position.
@@ -1135,37 +1145,22 @@ namespace PagerSlidingTabStrip
 			/// <value>
 			/// The current position.
 			/// </value>
-			public int CurrentPosition
-			{
-				get;
-				set;
-			}
+			public int CurrentPosition { get; set; }
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="SavedState"/> class.
+			/// Initializes a new instance of the <see cref="PagerSlidingTabStripState"/> class.
 			/// </summary>
 			/// <param name="superState">State of the super.</param>
-			public SavedState(IParcelable superState)
+			public PagerSlidingTabStripState(IParcelable superState)
 				: base(superState)
 			{
 
 			}
 
-			private SavedState(Parcel source)
+			public PagerSlidingTabStripState(Parcel source)
 				: base(source)
 			{
 				CurrentPosition = source.ReadInt();
-			}
-
-			/// <summary>
-			/// Initializes a new instance of the <see cref="SavedState"/> class.
-			/// </summary>
-			/// <param name="javaReference">The java reference.</param>
-			/// <param name="transfer">The transfer.</param>
-			protected SavedState(IntPtr javaReference, JniHandleOwnership transfer)
-				: base(javaReference, transfer)
-			{
-
 			}
 
 			/// <summary>
@@ -1195,18 +1190,16 @@ namespace PagerSlidingTabStrip
 
 				public Java.Lang.Object CreateFromParcel(Parcel source)
 				{
-					return new SavedState(source);
+					return new PagerSlidingTabStripState(source);
 				}
 
 				public Java.Lang.Object[] NewArray(int size)
 				{
-					return new SavedState[size];
+					return new PagerSlidingTabStripState[size];
 				}
 
 				#endregion
 			}
 		}
-
-		public static global::PagerSlidingTabStrip.TabProviderFactory _defaultTabProviderFactory { get; set; }
 	}
 }

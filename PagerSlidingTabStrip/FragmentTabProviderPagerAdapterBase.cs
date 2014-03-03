@@ -110,7 +110,6 @@ namespace PagerSlidingTabStrip
 			OnTabUpdateRequired(position, hint);
 		}
 
-
 		View ITabProvider.GetTab(PagerSlidingTabStrip owner, ViewGroup root, int position, View recycled)
 		{
 			var toReturn = GetTab(owner, root, position, recycled);

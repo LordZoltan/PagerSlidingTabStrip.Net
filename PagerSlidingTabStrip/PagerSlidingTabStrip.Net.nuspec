@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>PagerSlidingTabStrip.Net</id>
-    <version>1.1.31203.1528</version>
+    <version>1.1.40303.1428</version>
     <title>PagerSlidingTabStrip for Xamarin.Android</title>
     <authors>Andras.Zoltan</authors>
     <owners>Andras.Zoltan</owners>
@@ -12,7 +12,7 @@
     <description>A greatly enhanced and customisable Tab control for use with ViewPagers. Offers complete control over each tab's contents and how they are updated as things change.
 
 			Started originally as a .Net port of Andreas Stütz's Java project (found at https://github.com/astuetz/PagerSlidingTabStrip). It now has many more customisation hooks.</description>
-    <releaseNotes>Added TabProviderFactory plus extensibility points to make it easier to chain multiple tab providers together and to be able to customise the default text tab provider.  Minor bugfix to SetCurrentItem as it wasn't updating the tab position too.</releaseNotes>
+    <releaseNotes>(FIXED - confirmed working) Bugfix to state handling which was causing crashes when restoring an Activity that uses the tab strip.</releaseNotes>
     <copyright>2013 Andras Zoltan</copyright>
     <tags>xamarin android tabstrip viewpager pagerslidingtabstrip</tags>
     <frameworkAssemblies>

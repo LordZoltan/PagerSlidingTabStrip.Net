@@ -218,7 +218,7 @@ namespace Example
 				//what we're saying here is that any view that's previously been inflated is fine to be re-used so long as it's re-bound
 				if (recycled != null)
 					return recycled;
-
+				
 				var inflater = (LayoutInflater)owner.Context.GetSystemService(LayoutInflaterService);
 				var view = inflater.Inflate(Resource.Layout.custom_tab, root, false) as ViewGroup;
 
@@ -490,6 +490,12 @@ namespace Example
 
 		protected override void OnRestoreInstanceState(Bundle savedInstanceState)
 		{
+			if (savedInstanceState == null)
+			{
+				base.OnRestoreInstanceState(savedInstanceState);
+				return;
+			}
+
 			base.OnRestoreInstanceState(savedInstanceState);
 			_currentColor = new Color(savedInstanceState.GetInt("color"));
 			_useAdapter2 = savedInstanceState.GetBoolean("useAdapter2", false);
