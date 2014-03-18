@@ -1111,7 +1111,7 @@ namespace PagerSlidingTabStrip
 			Bundle bundle = state as Bundle;
 			if (bundle != null)
 			{
-				IParcelable superState = (IParcelable)bundle.GetParcelable("base");
+				IParcelable superState = bundle.GetParcelable("base") as IParcelable;
 				if (superState != null)
 					base.OnRestoreInstanceState(superState);
 				_currentPosition = bundle.GetInt("currentPosition", 0);
