@@ -120,7 +120,7 @@ namespace PagerSlidingTabStrip
 		private int _scrollOffset = 52;
 		private int _indicatorHeight = 8;
 		private int _underlineHeight = 2;
-		private int _dividerPadding = 12;
+		private int _tabDividerPadding = 12;
 		private int _tabPadding = 24;
 		private int _dividerWidth = 1;
 		private int _tabTextSize = 12;
@@ -313,15 +313,15 @@ namespace PagerSlidingTabStrip
 		/// <value>
 		/// The divider padding.
 		/// </value>
-		public int DividerPadding
+		public int TabDividerPadding
 		{
 			get
 			{
-				return _dividerPadding;
+				return _tabDividerPadding;
 			}
 			set
 			{
-				_dividerPadding = value;
+				_tabDividerPadding = value;
 				Invalidate();
 			}
 		}
@@ -552,7 +552,7 @@ namespace PagerSlidingTabStrip
 			_scrollOffset = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _scrollOffset, dm));
 			_indicatorHeight = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _indicatorHeight, dm));
 			_underlineHeight = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _underlineHeight, dm));
-			_dividerPadding = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _dividerPadding, dm));
+			_tabDividerPadding = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _tabDividerPadding, dm));
 			_tabPadding = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _tabPadding, dm));
 			_dividerWidth = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _dividerWidth, dm));
 			_tabTextSize = Convert.ToInt32(TypedValue.ApplyDimension(ComplexUnitType.Dip, _tabTextSize, dm));
@@ -575,7 +575,7 @@ namespace PagerSlidingTabStrip
 			_dividerColor = a.GetColor(Resource.Styleable.PagerSlidingTabStrip_dividerColor, _dividerColor);
 			_indicatorHeight = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_indicatorHeight, _indicatorHeight);
 			_underlineHeight = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_underlineHeight, _underlineHeight);
-			_dividerPadding = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_dividerPadding, _dividerPadding);
+			_tabDividerPadding = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_tabDividerPadding, _tabDividerPadding);
 			_tabPadding = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_tabPaddingLeftRight, _tabPadding);
 			_tabBackgroundResId = a.GetResourceId(Resource.Styleable.PagerSlidingTabStrip_tabBackground, _tabBackgroundResId);
 			_shouldExpand = a.GetBoolean(Resource.Styleable.PagerSlidingTabStrip_shouldExpand, _shouldExpand);
@@ -1042,7 +1042,7 @@ namespace PagerSlidingTabStrip
 			for (int i = 0; i < _tabCount - 1; i++)
 			{
 				View tab = _tabsContainer.GetChildAt(i);
-				canvas.DrawLine(tab.Right, _dividerPadding, tab.Right, height - _dividerPadding, _dividerPaint);
+				canvas.DrawLine(tab.Right, _tabDividerPadding, tab.Right, height - _tabDividerPadding, _dividerPaint);
 			}
 		}
 
