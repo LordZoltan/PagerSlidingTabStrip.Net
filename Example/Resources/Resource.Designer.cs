@@ -34,7 +34,7 @@ namespace Example
 			global::PagerSlidingTabStrip.Resource.Attribute.shouldExpand = global::Example.Resource.Attribute.shouldExpand;
 			global::PagerSlidingTabStrip.Resource.Attribute.tabBackground = global::Example.Resource.Attribute.tabBackground;
 			global::PagerSlidingTabStrip.Resource.Attribute.tabPaddingLeftRight = global::Example.Resource.Attribute.tabPaddingLeftRight;
-			global::PagerSlidingTabStrip.Resource.Attribute.textAllCaps = global::Example.Resource.Attribute.textAllCaps;
+			global::PagerSlidingTabStrip.Resource.Attribute.tabTextAllCaps = global::Example.Resource.Attribute.textAllCaps;
 			global::PagerSlidingTabStrip.Resource.Attribute.underlineColor = global::Example.Resource.Attribute.underlineColor;
 			global::PagerSlidingTabStrip.Resource.Attribute.underlineHeight = global::Example.Resource.Attribute.underlineHeight;
 			global::PagerSlidingTabStrip.Resource.Color.background_tab_pressed = global::Example.Resource.Color.background_tab_pressed;
@@ -51,7 +51,7 @@ namespace Example
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_shouldExpand = global::Example.Resource.Styleable.PagerSlidingTabStrip_shouldExpand;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabBackground = global::Example.Resource.Styleable.PagerSlidingTabStrip_tabBackground;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabPaddingLeftRight = global::Example.Resource.Styleable.PagerSlidingTabStrip_tabPaddingLeftRight;
-			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_textAllCaps = global::Example.Resource.Styleable.PagerSlidingTabStrip_textAllCaps;
+			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabTextAllCaps = global::Example.Resource.Styleable.PagerSlidingTabStrip_textAllCaps;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_underlineColor = global::Example.Resource.Styleable.PagerSlidingTabStrip_underlineColor;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_underlineHeight = global::Example.Resource.Styleable.PagerSlidingTabStrip_underlineHeight;
 		}

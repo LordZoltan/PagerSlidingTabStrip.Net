@@ -115,7 +115,7 @@ namespace PagerSlidingTabStrip
 		private Color _underlineColor = Color.Argb(0x1A, 0x00, 0x00, 0x00);
 		private Color _dividerColor = Color.Argb(0x1A, 0x00, 0x00, 0x00);
 		private bool _shouldExpand = false;
-		private bool _textAllCaps = true;
+		private bool _tabTextAllCaps = true;
 		private bool _globalLayoutSubscribed = false;
 		private int _scrollOffset = 52;
 		private int _indicatorHeight = 8;
@@ -366,15 +366,15 @@ namespace PagerSlidingTabStrip
 		/// <summary>
 		/// Gets or sets a value indicating whether the text in the tabs should be all capitals.
 		/// </summary>
-		public bool TextAllCaps
+		public bool TabTextAllCaps
 		{
 			get
-			{
-				return _textAllCaps;
+            {
+				return _tabTextAllCaps;
 			}
 			set
 			{
-				_textAllCaps = value;
+				_tabTextAllCaps = value;
 				//TODO: call something here to force a redraw?
 				UpdateTabStyles();
 			}
@@ -580,7 +580,7 @@ namespace PagerSlidingTabStrip
 			_tabBackgroundResId = a.GetResourceId(Resource.Styleable.PagerSlidingTabStrip_tabBackground, _tabBackgroundResId);
 			_shouldExpand = a.GetBoolean(Resource.Styleable.PagerSlidingTabStrip_shouldExpand, _shouldExpand);
 			_scrollOffset = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_scrollOffset, _scrollOffset);
-			_textAllCaps = a.GetBoolean(Resource.Styleable.PagerSlidingTabStrip_textAllCaps, _textAllCaps);
+			_tabTextAllCaps = a.GetBoolean(Resource.Styleable.PagerSlidingTabStrip_tabTextAllCaps, _tabTextAllCaps);
 
 			a.Recycle();
 

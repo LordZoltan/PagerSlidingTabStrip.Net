@@ -52,7 +52,7 @@ namespace PagerSlidingTabStrip
 			public static int tabPaddingLeftRight = 2130771974;
 			
 			// aapt resource value: 0x7f01000a
-			public static int textAllCaps = 2130771978;
+			public static int tabTextAllCaps = 2130771978;
 			
 			// aapt resource value: 0x7f010001
 			public static int underlineColor = 2130771969;
@@ -178,7 +178,7 @@ namespace PagerSlidingTabStrip
 			public static int PagerSlidingTabStrip_tabPaddingLeftRight = 6;
 			
 			// aapt resource value: 10
-			public static int PagerSlidingTabStrip_textAllCaps = 10;
+			public static int PagerSlidingTabStrip_tabTextAllCaps = 10;
 			
 			// aapt resource value: 1
 			public static int PagerSlidingTabStrip_underlineColor = 1;
