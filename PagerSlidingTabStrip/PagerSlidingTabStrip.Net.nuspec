@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>PagerSlidingTabStrip.Net</id>
-    <version>1.1.40318.0759</version>
+    <version>1.2.40604.0921</version>
     <title>PagerSlidingTabStrip for Xamarin.Android</title>
     <authors>Andras.Zoltan</authors>
     <owners>Andras.Zoltan</owners>
@@ -12,7 +12,7 @@
     <description>A greatly enhanced and customisable Tab control for use with ViewPagers. Offers complete control over each tab's contents and how they are updated as things change.
 
 			Started originally as a .Net port of Andreas Stütz's Java project (found at https://github.com/astuetz/PagerSlidingTabStrip). It now has many more customisation hooks.</description>
-    <releaseNotes>Minor change to a cast which could raise an exception if the app was restarting following another crash.</releaseNotes>
+    <releaseNotes>Breaking change - dividerPadding renamed to tabDividerPadding and textAllCaps renamed to tabTextAllCaps.  Also support library changed to Xamarin.Android.Support.v4 from the now obsolete Mono.Android.Support.v4 - DO NOT USE IF YOU ALSO USE LEGACY BAR v1</releaseNotes>
     <copyright>2014 Andras Zoltan</copyright>
     <tags>xamarin android tabstrip viewpager pagerslidingtabstrip</tags>
     <dependencies>

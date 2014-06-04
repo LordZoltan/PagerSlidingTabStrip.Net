@@ -47,7 +47,7 @@ namespace PagerSlidingTabStrip
 			
 			// aapt resource value: 0x7f010005
 			public static int tabDividerPadding = 2130771973;
-
+			
 			// aapt resource value: 0x7f010006
 			public static int tabPaddingLeftRight = 2130771974;
 			
@@ -173,7 +173,7 @@ namespace PagerSlidingTabStrip
 			
 			// aapt resource value: 5
 			public static int PagerSlidingTabStrip_tabDividerPadding = 5;
-
+			
 			// aapt resource value: 6
 			public static int PagerSlidingTabStrip_tabPaddingLeftRight = 6;
 			

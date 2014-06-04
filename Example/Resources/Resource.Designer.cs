@@ -27,14 +27,14 @@ namespace Example
 		public static void UpdateIdValues()
 		{
 			global::PagerSlidingTabStrip.Resource.Attribute.dividerColor = global::Example.Resource.Attribute.dividerColor;
-			global::PagerSlidingTabStrip.Resource.Attribute.dividerPadding = global::Example.Resource.Attribute.dividerPadding;
 			global::PagerSlidingTabStrip.Resource.Attribute.indicatorColor = global::Example.Resource.Attribute.indicatorColor;
 			global::PagerSlidingTabStrip.Resource.Attribute.indicatorHeight = global::Example.Resource.Attribute.indicatorHeight;
 			global::PagerSlidingTabStrip.Resource.Attribute.scrollOffset = global::Example.Resource.Attribute.scrollOffset;
 			global::PagerSlidingTabStrip.Resource.Attribute.shouldExpand = global::Example.Resource.Attribute.shouldExpand;
 			global::PagerSlidingTabStrip.Resource.Attribute.tabBackground = global::Example.Resource.Attribute.tabBackground;
+			global::PagerSlidingTabStrip.Resource.Attribute.tabDividerPadding = global::Example.Resource.Attribute.tabDividerPadding;
 			global::PagerSlidingTabStrip.Resource.Attribute.tabPaddingLeftRight = global::Example.Resource.Attribute.tabPaddingLeftRight;
-			global::PagerSlidingTabStrip.Resource.Attribute.tabTextAllCaps = global::Example.Resource.Attribute.textAllCaps;
+			global::PagerSlidingTabStrip.Resource.Attribute.tabTextAllCaps = global::Example.Resource.Attribute.tabTextAllCaps;
 			global::PagerSlidingTabStrip.Resource.Attribute.underlineColor = global::Example.Resource.Attribute.underlineColor;
 			global::PagerSlidingTabStrip.Resource.Attribute.underlineHeight = global::Example.Resource.Attribute.underlineHeight;
 			global::PagerSlidingTabStrip.Resource.Color.background_tab_pressed = global::Example.Resource.Color.background_tab_pressed;
@@ -44,14 +44,14 @@ namespace Example
 			global::PagerSlidingTabStrip.Resource.String.Hello = global::Example.Resource.String.Hello;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip = global::Example.Resource.Styleable.PagerSlidingTabStrip;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_dividerColor = global::Example.Resource.Styleable.PagerSlidingTabStrip_dividerColor;
-			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_dividerPadding = global::Example.Resource.Styleable.PagerSlidingTabStrip_dividerPadding;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_indicatorColor = global::Example.Resource.Styleable.PagerSlidingTabStrip_indicatorColor;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_indicatorHeight = global::Example.Resource.Styleable.PagerSlidingTabStrip_indicatorHeight;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_scrollOffset = global::Example.Resource.Styleable.PagerSlidingTabStrip_scrollOffset;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_shouldExpand = global::Example.Resource.Styleable.PagerSlidingTabStrip_shouldExpand;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabBackground = global::Example.Resource.Styleable.PagerSlidingTabStrip_tabBackground;
+			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabDividerPadding = global::Example.Resource.Styleable.PagerSlidingTabStrip_tabDividerPadding;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabPaddingLeftRight = global::Example.Resource.Styleable.PagerSlidingTabStrip_tabPaddingLeftRight;
-			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabTextAllCaps = global::Example.Resource.Styleable.PagerSlidingTabStrip_textAllCaps;
+			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_tabTextAllCaps = global::Example.Resource.Styleable.PagerSlidingTabStrip_tabTextAllCaps;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_underlineColor = global::Example.Resource.Styleable.PagerSlidingTabStrip_underlineColor;
 			global::PagerSlidingTabStrip.Resource.Styleable.PagerSlidingTabStrip_underlineHeight = global::Example.Resource.Styleable.PagerSlidingTabStrip_underlineHeight;
 		}
@@ -61,9 +61,6 @@ namespace Example
 			
 			// aapt resource value: 0x7f010002
 			public const int dividerColor = 2130771970;
-			
-			// aapt resource value: 0x7f010005
-			public const int dividerPadding = 2130771973;
 			
 			// aapt resource value: 0x7f010000
 			public const int indicatorColor = 2130771968;
@@ -80,11 +77,14 @@ namespace Example
 			// aapt resource value: 0x7f010008
 			public const int tabBackground = 2130771976;
 			
+			// aapt resource value: 0x7f010005
+			public const int tabDividerPadding = 2130771973;
+			
 			// aapt resource value: 0x7f010006
 			public const int tabPaddingLeftRight = 2130771974;
 			
 			// aapt resource value: 0x7f01000a
-			public const int textAllCaps = 2130771978;
+			public const int tabTextAllCaps = 2130771978;
 			
 			// aapt resource value: 0x7f010001
 			public const int underlineColor = 2130771969;
@@ -375,9 +375,6 @@ namespace Example
 			// aapt resource value: 2
 			public const int PagerSlidingTabStrip_dividerColor = 2;
 			
-			// aapt resource value: 5
-			public const int PagerSlidingTabStrip_dividerPadding = 5;
-			
 			// aapt resource value: 0
 			public const int PagerSlidingTabStrip_indicatorColor = 0;
 			
@@ -393,11 +390,14 @@ namespace Example
 			// aapt resource value: 8
 			public const int PagerSlidingTabStrip_tabBackground = 8;
 			
+			// aapt resource value: 5
+			public const int PagerSlidingTabStrip_tabDividerPadding = 5;
+			
 			// aapt resource value: 6
 			public const int PagerSlidingTabStrip_tabPaddingLeftRight = 6;
 			
 			// aapt resource value: 10
-			public const int PagerSlidingTabStrip_textAllCaps = 10;
+			public const int PagerSlidingTabStrip_tabTextAllCaps = 10;
 			
 			// aapt resource value: 1
 			public const int PagerSlidingTabStrip_underlineColor = 1;
