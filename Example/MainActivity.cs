@@ -230,7 +230,7 @@ namespace Example
 				ProgressBar bar = view.FindViewById<ProgressBar>(Resource.Id.tab_progress);
 				TextView textView = view.FindViewById<TextView>(Resource.Id.tab_text);
 
-				textView.Text = owner.TextAllCaps ? _titles[position].ToUpper() : _titles[position];
+				textView.Text = owner.TabTextAllCaps ? _titles[position].ToUpper() : _titles[position];
 
 				if (SharedState.GetInProgress(position))
 				{

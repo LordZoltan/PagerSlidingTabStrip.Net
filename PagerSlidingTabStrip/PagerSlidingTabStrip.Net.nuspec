@@ -15,8 +15,10 @@
     <releaseNotes>Minor change to a cast which could raise an exception if the app was restarting following another crash.</releaseNotes>
     <copyright>2014 Andras Zoltan</copyright>
     <tags>xamarin android tabstrip viewpager pagerslidingtabstrip</tags>
+    <dependencies>
+      <dependency id="Xamarin.Android.Support.v4" version="19.0.2" />
+    </dependencies>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="Mono.Android.Support.v4" />
       <frameworkAssembly assemblyName="Mono.Android.Export" />
     </frameworkAssemblies>
   </metadata>

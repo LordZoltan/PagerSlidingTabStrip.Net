@@ -99,7 +99,7 @@ namespace PagerSlidingTabStrip
 				return;
 
 			var s = _adapter.GetPageTitle(position);
-			if (owner.TextAllCaps)
+			if (owner.TabTextAllCaps)
 				s = (s ?? "").ToUpper();
 			v.SetText(s, TextView.BufferType.Normal);
 			OnTabUpdated(position);
