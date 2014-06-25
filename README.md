@@ -19,7 +19,7 @@ This project is available as a ready-rolled Nuget package (for Android 2.2+ proj
 1.2.x release breaking change
 -----------------------------
 
-James Ottoway very kindly followed up [Issue #1](https://github.com/LordZoltan/PagerSlidingTabStrip.Net/issues/1), which involved changing a couple of the attributes supported
+James Ottaway very kindly followed up [Issue #1](https://github.com/LordZoltan/PagerSlidingTabStrip.Net/issues/1), which involved changing a couple of the attributes supported
 by the control.  In the process the project was changed to reference the newer Xamarin.Android.Support.v4 reference library (via nuget) rather than the old Mono.Android.Support.v4
 reference library.
 
@@ -79,7 +79,7 @@ Ported by
 With contributions from
 =======================
 
- * [James Ottoway](https://github.com/jamesottaway)
+ * [James Ottaway](https://github.com/jamesottaway)
 
 *Many thanks!*
 
