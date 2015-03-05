@@ -750,7 +750,7 @@ namespace PagerSlidingTabStrip
 			}
 		}
 
-        void UpdateSelectedTab(int position)
+		void UpdateSelectedTab(int position)
 		{
 			for (var i = 0; i < _tabCount; i++)
 			{
