@@ -30,9 +30,6 @@ namespace PagerSlidingTabStrip
 			// aapt resource value: 0x7f010002
 			public static int dividerColor = 2130771970;
 			
-			// aapt resource value: 0x7f010006
-			public static int dividerPadding = 2130771974;
-			
 			// aapt resource value: 0x7f010000
 			public static int indicatorColor = 2130771968;
 			
@@ -51,11 +48,14 @@ namespace PagerSlidingTabStrip
 			// aapt resource value: 0x7f010009
 			public static int tabBackground = 2130771977;
 			
+			// aapt resource value: 0x7f010006
+			public static int tabDividerPadding = 2130771974;
+			
 			// aapt resource value: 0x7f010007
 			public static int tabPaddingLeftRight = 2130771975;
 			
 			// aapt resource value: 0x7f01000b
-			public static int textAllCaps = 2130771979;
+			public static int tabTextAllCaps = 2130771979;
 			
 			// aapt resource value: 0x7f010001
 			public static int underlineColor = 2130771969;
@@ -161,9 +161,6 @@ namespace PagerSlidingTabStrip
 			// aapt resource value: 2
 			public static int PagerSlidingTabStrip_dividerColor = 2;
 			
-			// aapt resource value: 6
-			public static int PagerSlidingTabStrip_dividerPadding = 6;
-			
 			// aapt resource value: 0
 			public static int PagerSlidingTabStrip_indicatorColor = 0;
 			
@@ -182,11 +179,14 @@ namespace PagerSlidingTabStrip
 			// aapt resource value: 9
 			public static int PagerSlidingTabStrip_tabBackground = 9;
 			
+			// aapt resource value: 6
+			public static int PagerSlidingTabStrip_tabDividerPadding = 6;
+			
 			// aapt resource value: 7
 			public static int PagerSlidingTabStrip_tabPaddingLeftRight = 7;
 			
 			// aapt resource value: 11
-			public static int PagerSlidingTabStrip_textAllCaps = 11;
+			public static int PagerSlidingTabStrip_tabTextAllCaps = 11;
 			
 			// aapt resource value: 1
 			public static int PagerSlidingTabStrip_underlineColor = 1;
