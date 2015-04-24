@@ -5,6 +5,7 @@
 		<attr name="indicatorColor" format="color" />
 		<attr name="underlineColor" format="color" />
 		<attr name="dividerColor" format="color" />
+		<attr name="nonSelectedTextColor" format="color" />
 		<attr name="indicatorHeight" format="dimension" />
 		<attr name="underlineHeight" format="dimension" />
 		<attr name="tabDividerPadding" format="dimension" />

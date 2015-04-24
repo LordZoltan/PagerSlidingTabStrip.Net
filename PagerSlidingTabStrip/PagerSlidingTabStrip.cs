@@ -125,6 +125,7 @@ namespace PagerSlidingTabStrip
 		private int _dividerWidth = 1;
 		private int _tabTextSize = 12;
 		private Color _tabTextColor = Color.Argb(0xFF, 0x66, 0x66, 0x66);
+		private Color _tabNonSelectedTextColor = Color.Argb(0xFF, 0x66, 0x66, 0x66);
 		private Typeface _tabTypeface = null;
 		private TypefaceStyle _tabTypefaceStyle = Typeface.DefaultBold.Style;
 		private int _lastScrollX = 0;
@@ -419,6 +420,25 @@ namespace PagerSlidingTabStrip
 		}
 
 		/// <summary>
+		/// Gets or sets the color of the text displayed in the tabs that are not currently selected.
+		/// </summary>
+		/// <value>
+		/// The color of the text.
+		/// </value>
+		public Color NonSelectedTextColor 
+		{
+			get
+			{ 
+				return _tabNonSelectedTextColor; 
+			}
+			set
+			{
+				_tabNonSelectedTextColor = value;
+				UpdateTabStyles ();
+			}
+		}
+
+		/// <summary>
 		/// Gets the typeface used to draw the tab text.
 		/// </summary>
 		/// <value>
@@ -573,6 +593,7 @@ namespace PagerSlidingTabStrip
 			_indicatorColor = a.GetColor(Resource.Styleable.PagerSlidingTabStrip_indicatorColor, _indicatorColor);
 			_underlineColor = a.GetColor(Resource.Styleable.PagerSlidingTabStrip_underlineColor, _underlineColor);
 			_dividerColor = a.GetColor(Resource.Styleable.PagerSlidingTabStrip_dividerColor, _dividerColor);
+			_tabNonSelectedTextColor = a.GetColor (Resource.Styleable.PagerSlidingTabStrip_nonSelectedTextColor, _tabNonSelectedTextColor);
 			_indicatorHeight = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_indicatorHeight, _indicatorHeight);
 			_underlineHeight = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_underlineHeight, _underlineHeight);
 			_tabDividerPadding = a.GetDimensionPixelSize(Resource.Styleable.PagerSlidingTabStrip_tabDividerPadding, _tabDividerPadding);
@@ -720,10 +741,34 @@ namespace PagerSlidingTabStrip
 
 		void pager_PageSelected(object sender, ViewPager.PageSelectedEventArgs e)
 		{
+			UpdateSelectedTab (e.Position);
+
 			var evt = PageSelected;
 			if (evt != null)
 			{
 				evt(this, e);
+			}
+		}
+
+		void UpdateSelectedTab(int position)
+		{
+			for (var i = 0; i < _tabCount; i++)
+			{
+				View v = _tabsContainer.GetChildAt (i);
+				v.Selected = position == i;
+
+				FrameLayout vLayout = v as FrameLayout;
+				if (vLayout != null && vLayout.ChildCount == 1)
+				{
+					var isTabSelected = v.Selected;
+
+					v = vLayout.GetChildAt (0);
+					var textView = v as TextView;
+					if (textView != null)
+					{
+						textView.SetTextColor (isTabSelected ? _tabTextColor : _tabNonSelectedTextColor);
+					}
+				}
 			}
 		}
 
@@ -857,6 +902,7 @@ namespace PagerSlidingTabStrip
 			_inNotifyDataSetChanged = false;
 			RequestLayout();
 			Invalidate();
+			UpdateSelectedTab (_pager.CurrentItem);
 		}
 
 		private void AddTabClick(View v, int position)
@@ -880,6 +926,7 @@ namespace PagerSlidingTabStrip
 			_currentPosition = position;
 			_currentPositionOffset = 0;
 			_pager.SetCurrentItem(position, smoothScroll);
+			UpdateSelectedTab (position);
 		}
 
 		void ViewTreeObserver_GlobalLayout(object sender, EventArgs e)
@@ -915,10 +962,18 @@ namespace PagerSlidingTabStrip
 				FrameLayout vLayout = v as FrameLayout;
 				if (vLayout != null && vLayout.ChildCount == 1)
 				{
+					var isTabSelected = v.Selected;
+
 					//the first and only child of the framelayout is the 
 					//view that was created by the tab provider - fetch it.
 					v = vLayout.GetChildAt(0);
 					_tabProvider.UpdateTabStyle(v, this, i);
+
+					var textView = v as TextView;
+					if (textView != null)
+					{
+						textView.SetTextColor (isTabSelected ? _tabTextColor : _tabNonSelectedTextColor);
+					}
 				}
 			}
 		}
