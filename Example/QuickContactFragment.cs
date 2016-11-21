@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Android.App;
 using Android.Content;
+using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
@@ -68,7 +69,7 @@ namespace Example
 			}
 		}
 
-		public class ContactPagerAdapter : PagerAdapter, PagerSlidingTabStrip.PagerSlidingTabStrip.IIconTabProvider
+		public class ContactPagerAdapter : Android.Support.V4.View.PagerAdapter, PagerSlidingTabStrip.PagerSlidingTabStrip.IIconTabProvider
 		{
 			private int[] ICONS = { Resource.Drawable.ic_launcher_gplus, Resource.Drawable.ic_launcher_gmail,
 				Resource.Drawable.ic_launcher_gmaps, Resource.Drawable.ic_launcher_chrome };
