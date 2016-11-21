@@ -44,7 +44,7 @@ namespace PagerSlidingTabStrip
 		/// Initializes a new instance of the <see cref="FragmentTabProviderPagerAdapterBase"/> class.
 		/// </summary>
 		/// <param name="fragmentManager">The fragment manager.</param>
-		protected FragmentTabProviderPagerAdapterBase(FragmentManager fragmentManager)
+		protected FragmentTabProviderPagerAdapterBase(Android.Support.V4.App.FragmentManager fragmentManager)
 			: base(fragmentManager)
 		{
 			if (this is PagerSlidingTabStrip.IIconTabProvider)

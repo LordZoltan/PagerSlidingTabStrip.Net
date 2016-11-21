@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>PagerSlidingTabStrip.Net</id>
-    <version>1.1.40318.0759</version>
+    <version>1.1.40318.0760</version>
     <title>PagerSlidingTabStrip for Xamarin.Android</title>
     <authors>Andras.Zoltan</authors>
     <owners>Andras.Zoltan</owners>
