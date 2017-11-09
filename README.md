@@ -16,6 +16,20 @@ Using Nuget?
 
 This project is available as a ready-rolled Nuget package (for Android 2.2+ projects) as [PagerSlidingTabStrip.Net on Nuget.Org](https://www.nuget.org/packages/PagerSlidingTabStrip.Net/).
 
+1.2.x release breaking change
+-----------------------------
+
+James Ottaway very kindly followed up [Issue #1](https://github.com/LordZoltan/PagerSlidingTabStrip.Net/issues/1), which involved changing a couple of the attributes supported
+by the control.  In the process the project was changed to reference the newer Xamarin.Android.Support.v4 reference library (via nuget) rather than the old Mono.Android.Support.v4
+reference library.
+
+These are both breaking changes - the first is simply a case of renaming attributes in your layout files.  The second might not hit you at all, but is a
+concern if you are using another binary which references the older Mono.Android.Support.v4 library.  You'll either need a different version of that library
+that references the newer support library wrapper, or get hold of the source for the offending binary and build it yourself to use the correct one.
+
+Example
+-------
+
 See Andreas' demo, available on the Play Store (see [the project page][1]), for an accurate representation of what you can achieve with this library.
 
 The Example project in the `sample/` folder builds an app that's functionally the same:
@@ -62,11 +76,21 @@ Ported by
 
  * Andras Zoltan (@RealLordZoltan)
 
+With contributions from
+=======================
+
+ * [James Ottaway](https://github.com/jamesottaway)
+
+*Many thanks!*
+
+Port Notes
+==========
+
 I've tried where possible to translate Java paradigms to .Net paradigms in a similar way to Xamarin's own methodology.  However,
 my main purpose was to get it working, so there might be some things I've missed.
 
-I might add features to this library as required by another project that I'm working on - but only in a way that would enhance 
-other apps of course.
+I developed this port specifically for another project I was working on at the time - and as a result I have added features to this library
+that were not present in the original.
 
 Originally developed by
 =======================

@@ -30,35 +30,38 @@ namespace PagerSlidingTabStrip
 			// aapt resource value: 0x7f010002
 			public static int dividerColor = 2130771970;
 			
-			// aapt resource value: 0x7f010005
-			public static int dividerPadding = 2130771973;
-			
 			// aapt resource value: 0x7f010000
 			public static int indicatorColor = 2130771968;
 			
+			// aapt resource value: 0x7f010004
+			public static int indicatorHeight = 2130771972;
+			
 			// aapt resource value: 0x7f010003
-			public static int indicatorHeight = 2130771971;
-			
-			// aapt resource value: 0x7f010007
-			public static int scrollOffset = 2130771975;
-			
-			// aapt resource value: 0x7f010009
-			public static int shouldExpand = 2130771977;
+			public static int nonSelectedTextColor = 2130771971;
 			
 			// aapt resource value: 0x7f010008
-			public static int tabBackground = 2130771976;
-			
-			// aapt resource value: 0x7f010006
-			public static int tabPaddingLeftRight = 2130771974;
+			public static int scrollOffset = 2130771976;
 			
 			// aapt resource value: 0x7f01000a
-			public static int textAllCaps = 2130771978;
+			public static int shouldExpand = 2130771978;
+			
+			// aapt resource value: 0x7f010009
+			public static int tabBackground = 2130771977;
+			
+			// aapt resource value: 0x7f010006
+			public static int tabDividerPadding = 2130771974;
+			
+			// aapt resource value: 0x7f010007
+			public static int tabPaddingLeftRight = 2130771975;
+			
+			// aapt resource value: 0x7f01000b
+			public static int tabTextAllCaps = 2130771979;
 			
 			// aapt resource value: 0x7f010001
 			public static int underlineColor = 2130771969;
 			
-			// aapt resource value: 0x7f010004
-			public static int underlineHeight = 2130771972;
+			// aapt resource value: 0x7f010005
+			public static int underlineHeight = 2130771973;
 			
 			static Attribute()
 			{
@@ -151,40 +154,44 @@ namespace PagerSlidingTabStrip
 					2130771975,
 					2130771976,
 					2130771977,
-					2130771978};
+					2130771978,
+					2130771979};
 			
 			// aapt resource value: 2
 			public static int PagerSlidingTabStrip_dividerColor = 2;
 			
-			// aapt resource value: 5
-			public static int PagerSlidingTabStrip_dividerPadding = 5;
-			
 			// aapt resource value: 0
 			public static int PagerSlidingTabStrip_indicatorColor = 0;
 			
+			// aapt resource value: 4
+			public static int PagerSlidingTabStrip_indicatorHeight = 4;
+			
 			// aapt resource value: 3
-			public static int PagerSlidingTabStrip_indicatorHeight = 3;
-			
-			// aapt resource value: 7
-			public static int PagerSlidingTabStrip_scrollOffset = 7;
-			
-			// aapt resource value: 9
-			public static int PagerSlidingTabStrip_shouldExpand = 9;
+			public static int PagerSlidingTabStrip_nonSelectedTextColor = 3;
 			
 			// aapt resource value: 8
-			public static int PagerSlidingTabStrip_tabBackground = 8;
-			
-			// aapt resource value: 6
-			public static int PagerSlidingTabStrip_tabPaddingLeftRight = 6;
+			public static int PagerSlidingTabStrip_scrollOffset = 8;
 			
 			// aapt resource value: 10
-			public static int PagerSlidingTabStrip_textAllCaps = 10;
+			public static int PagerSlidingTabStrip_shouldExpand = 10;
+			
+			// aapt resource value: 9
+			public static int PagerSlidingTabStrip_tabBackground = 9;
+			
+			// aapt resource value: 6
+			public static int PagerSlidingTabStrip_tabDividerPadding = 6;
+			
+			// aapt resource value: 7
+			public static int PagerSlidingTabStrip_tabPaddingLeftRight = 7;
+			
+			// aapt resource value: 11
+			public static int PagerSlidingTabStrip_tabTextAllCaps = 11;
 			
 			// aapt resource value: 1
 			public static int PagerSlidingTabStrip_underlineColor = 1;
 			
-			// aapt resource value: 4
-			public static int PagerSlidingTabStrip_underlineHeight = 4;
+			// aapt resource value: 5
+			public static int PagerSlidingTabStrip_underlineHeight = 5;
 			
 			static Styleable()
 			{
