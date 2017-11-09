@@ -616,7 +616,9 @@ namespace PagerSlidingTabStrip
 	        var rectPaintDisposed = _rectPaint?.Handle == IntPtr.Zero;
             // if the paint object has not yet been initialized, or was disposed on the Java side
             if (_rectPaint == null || rectPaintDisposed)
-	        {
+            {
+                _rectPaint?.Dispose();
+
 	            _rectPaint = new Paint();
 	            _rectPaint.AntiAlias = true;
 	            _rectPaint.SetStyle(Android.Graphics.Paint.Style.Fill);
@@ -625,8 +627,10 @@ namespace PagerSlidingTabStrip
 	        var dividerPaintDisposed = _dividerPaint?.Handle == IntPtr.Zero;
             // if the paint object has not yet been initialized, or was disposed on the Java side
             if (_dividerPaint == null || dividerPaintDisposed)
-	        {
-	            _dividerPaint = new Paint();
+            {
+                _dividerPaint?.Dispose();
+
+                _dividerPaint = new Paint();
 	            _dividerPaint.AntiAlias = true;
 	            _dividerPaint.StrokeWidth = _dividerWidth;
 	        }
@@ -1283,5 +1287,23 @@ namespace PagerSlidingTabStrip
 				#endregion
 			}
 		}
+
+	    /// <inheritdoc />
+	    protected override void Dispose(bool disposing)
+	    {
+	        base.Dispose(disposing);
+
+	        if (_rectPaint?.Handle != IntPtr.Zero)
+	        {
+	            _rectPaint?.Dispose();
+	            _rectPaint = null;
+	        }
+
+	        if (_dividerPaint?.Handle != IntPtr.Zero)
+	        {
+	            _dividerPaint?.Dispose();
+	            _dividerPaint = null;
+	        }
+        }
 	}
 }
