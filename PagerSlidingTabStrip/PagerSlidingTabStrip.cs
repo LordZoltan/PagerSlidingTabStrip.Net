@@ -605,19 +605,47 @@ namespace PagerSlidingTabStrip
 
 			a.Recycle();
 
-			_rectPaint = new Paint();
-			_rectPaint.AntiAlias = true;
-			_rectPaint.SetStyle(Android.Graphics.Paint.Style.Fill);
+			EnsurePaintsAreInitialized();
 
-			_dividerPaint = new Paint();
-			_dividerPaint.AntiAlias = true;
-			_dividerPaint.StrokeWidth = _dividerWidth;
-
-			_defaultTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.MatchParent);
+		    _defaultTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.MatchParent);
 			_expandedTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MatchParent, 1.0f);
 		}
 
-		#endregion
+	    private void EnsurePaintsAreInitialized()
+	    {
+	        var rectPaintDisposed = _rectPaint?.Handle == IntPtr.Zero;
+            // if the paint object has not yet been initialized, or was disposed on the Java side
+            if (_rectPaint == null || rectPaintDisposed)
+            {
+                _rectPaint?.Dispose();
+
+	            _rectPaint = new Paint();
+	            _rectPaint.AntiAlias = true;
+	            _rectPaint.SetStyle(Android.Graphics.Paint.Style.Fill);
+	        }
+
+	        var dividerPaintDisposed = _dividerPaint?.Handle == IntPtr.Zero;
+            // if the paint object has not yet been initialized, or was disposed on the Java side
+            if (_dividerPaint == null || dividerPaintDisposed)
+            {
+                _dividerPaint?.Dispose();
+
+                _dividerPaint = new Paint();
+	            _dividerPaint.AntiAlias = true;
+	            _dividerPaint.StrokeWidth = _dividerWidth;
+	        }
+
+#if DEBUG
+            var log = string.Empty;
+	        if (rectPaintDisposed)
+	            log += " rectPaint disposed ";
+	        if (dividerPaintDisposed)
+	            log += log == string.Empty ? " dividerPaint disposed" : " AND dividerPaint disposed";
+            Log.Debug("PagerSlidingTabStrip", log);
+#endif
+        }
+
+	    #endregion
 
 		/// <summary>
 		/// Sets the view pager for this instance, from this the control inherits the PagerAdapter and then
@@ -1056,7 +1084,7 @@ namespace PagerSlidingTabStrip
 		protected override void OnDraw(Canvas canvas)
 		{
 			base.OnDraw(canvas);
-
+            
 			if (IsInEditMode || _tabCount == 0)
 			{
 				//Log(LogPriority.Info, "Exiting OnDraw early");
@@ -1065,9 +1093,12 @@ namespace PagerSlidingTabStrip
 
 			int height = Height;
 
-			// draw indicator line
+            // make sure the paint objects are initialized, so we get no "ObjectDisposedException" when setting the "Color" property
+            // which - in turn - would crash our app...
+		    EnsurePaintsAreInitialized();
+            // draw indicator line
 
-			_rectPaint.Color = _indicatorColor;
+            _rectPaint.Color = _indicatorColor;
 
 			// default: line below current tab
 			View currentTab = _tabsContainer.GetChildAt(_currentPosition);
@@ -1256,5 +1287,23 @@ namespace PagerSlidingTabStrip
 				#endregion
 			}
 		}
+
+	    /// <inheritdoc />
+	    protected override void Dispose(bool disposing)
+	    {
+	        base.Dispose(disposing);
+
+	        if (_rectPaint?.Handle != IntPtr.Zero)
+	        {
+	            _rectPaint?.Dispose();
+	            _rectPaint = null;
+	        }
+
+	        if (_dividerPaint?.Handle != IntPtr.Zero)
+	        {
+	            _dividerPaint?.Dispose();
+	            _dividerPaint = null;
+	        }
+        }
 	}
 }

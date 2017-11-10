@@ -44,7 +44,7 @@ namespace PagerSlidingTabStrip
 		/// Initializes a new instance of the <see cref="FragmentTabProviderPagerAdapterBase"/> class.
 		/// </summary>
 		/// <param name="fragmentManager">The fragment manager.</param>
-		protected FragmentTabProviderPagerAdapterBase(FragmentManager fragmentManager)
+		protected FragmentTabProviderPagerAdapterBase(Android.Support.V4.App.FragmentManager fragmentManager)
 			: base(fragmentManager)
 		{
 			if (this is PagerSlidingTabStrip.IIconTabProvider)
@@ -158,7 +158,7 @@ namespace PagerSlidingTabStrip
 		/// Called by the underlying implementation of <see cref="ITabProvider"/> to allow you to perform a custom
 		/// action to update the UI of the given tab (in response to text changes etc).  If you return false, 
 		/// then the default implementation will fall back to either the TextTabProvider or IconTabProvider, 
-		/// depending on whether the View is a TextView or if this instance also implements the <see cref="IIconTabProvider"/>.
+		/// depending on whether the View is a TextView or if this instance also implements the <see cref="PagerSlidingTabStrip.IIconTabProvider"/>.
 		/// If neither of these two conditions are met for fall back, then no update is performed.
 		/// 
 		/// Note that the OnTabUpdated method is called after this method finishes - unless you return false and

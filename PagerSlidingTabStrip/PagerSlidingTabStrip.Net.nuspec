@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>PagerSlidingTabStrip.Net</id>
-    <version>1.2.40604.0921</version>
+    <version>1.2.40704.0</version>
     <title>PagerSlidingTabStrip for Xamarin.Android</title>
     <authors>Andras.Zoltan</authors>
     <owners>Andras.Zoltan</owners>
@@ -16,7 +16,7 @@
     <copyright>2014 Andras Zoltan</copyright>
     <tags>xamarin android tabstrip viewpager pagerslidingtabstrip</tags>
     <dependencies>
-      <dependency id="Xamarin.Android.Support.v4" version="19.0.2" />
+      <dependency id="Xamarin.Android.Support.v4" version="25.3.1" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="Mono.Android.Export" />

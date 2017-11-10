@@ -112,3 +112,6 @@ UpgradeLog*.XML
 
 # Nuget packages
 *.nupkg
+/.vs/PagerSlidingTabStrip.Net/v15/Server/sqlite3
+/PagerSlidingTabStrip/PagerSlidingTabStrip.csproj.bak
+/Example/Example.csproj.bak
